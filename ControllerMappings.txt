@@ -1,0 +1,11 @@
+            *HTC VIVE controller*
+Right Contoller:
+Touch Pad 'North' Touch = Pointing ray activation.
+Touch Pad 'North' Click = Object Dragging activation.
+Touch Pad 'South' Click = Toggle between Flying/Walking.
+
+Left Contoller:
+Touch Pad 'North' Touch = Teleportation ray activation.
+Touch Pad 'North' Click = Teleportation.
+Touch Pad 'East' Click = Right Snap Turn.
+Touch Pad 'West' Click = Left Snap Turn.
