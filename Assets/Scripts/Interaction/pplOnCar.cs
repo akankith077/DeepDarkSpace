@@ -7,8 +7,8 @@ using Photon.Realtime;
 public class pplOnCar : MonoBehaviourPunCallbacks
 {
     public Hashtable passenger;
-    public List<float> passengers = new List<float>();
-    private float[] passengerIDs = { };
+    public List<int> passengers = new List<int>();
+    private int[] passengerIDs = { };
     void Start()
     {
 
@@ -17,10 +17,10 @@ public class pplOnCar : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        for (int i = 0; i < passengerIDs.Length; i++)
+        /*for (int i = 0; i < passengerIDs.Length; i++)
         {
             Debug.Log("Passengers on the carpet are: " + passengerIDs[i]);
-        }
+        }*/
     }
 
     private void OnCollisionEnter(Collision collision) //*************** When user enters the carpet
@@ -36,5 +36,10 @@ public class pplOnCar : MonoBehaviourPunCallbacks
         string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
         passengers.Remove(checkID);
         passengerIDs = passengers.ToArray();
+    }
+
+    public List<int> carpetList
+    {
+        get { return passengers; }
     }
 }

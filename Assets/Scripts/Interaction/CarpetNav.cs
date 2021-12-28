@@ -18,6 +18,9 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public GameObject carpetObj;
     public GameObject teleportIndicator;
 
+    public List<int> passengers = new List<int>();
+    private int[] passengerIDs = { };
+    private float myID = 0;
 
     private bool teleButtonCheck = false;
 
@@ -28,6 +31,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             platformObj = GameObject.Find("/ViewingSetup/Platform");
             hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
             teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
+            myID = transform.GetComponent<PhotonView>().OwnerActorNr;
         }
     }
 
@@ -37,18 +41,14 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             ButtonCheck();
-            
+
             if (teleButtonCheck && carpetObj != null)
-            {   
-                Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
-                Vector3 translateVector = groundPosition - carpetObj.transform.position;
-                carpetObj.transform.GetChild(0).position = teleportIndicator.transform.position - translateVector;
-                carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-                //carpetObj.gameObject.transform.SetParent(platformObj.transform); 
-            }
-            else if(!teleButtonCheck && carpetObj != null)
             {
-                carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+                GroupTeleActive();
+            }
+            if (groupTeleportationActive.GetStateUp(handType) && carpetObj != null)
+            {
+                GroupTeleDeactivate();
             }
 
             if (groupTeleportationConfirm.GetStateDown(handType) && carpetObj != null)
@@ -57,21 +57,69 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 Vector3 translateVector = teleportIndicator.transform.position - groundPosition;
                 carpetObj.transform.position += translateVector;
             }
+            if (carpetObj != null)
+            {
+                this.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = true;
+                passengers = carpetObj.GetComponent<pplOnCar>().carpetList;
+                passengerIDs = passengers.ToArray();
+
+
+                Debug.Log("Passengers on the carpet are: ");
+                for (int i = 0; i < passengerIDs.Length; i++)
+                {
+                    Debug.Log(passengerIDs[i]);
+                }
+            }
+            if (carpetObj == null)
+            {
+                this.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = false;
+            }
         }
     }
 
     private void OnCollisionEnter(Collision collision) //*************** When user enters the carpet
     {
-        
-        carpetObj = collision.gameObject;
-        
+        if (collision.gameObject.name == "carpet(Clone)")
+        {
+            carpetObj = collision.gameObject;
+        }
     }
     private void OnCollisionExit(Collision collision) //*************** When user enters the carpet
     {
-        
-        carpetObj = null;
-
+        if (collision.gameObject.name == "carpet(Clone)")
+        {
+            carpetObj = null;
+        }
     }
+
+    public void GroupTeleActive()
+    {
+        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
+        Vector3 translateVector = groundPosition - carpetObj.transform.position;
+        carpetObj.transform.GetChild(0).position = teleportIndicator.transform.position - translateVector;
+        carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+        //carpetObj.gameObject.transform.SetParent(platformObj.transform); 
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            if (passengerIDs[i] != myID)
+            {
+                photonView.RPC("RemoteTeleIndicatorAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), carpetObj.transform.GetChild(0).position, carpetObj.transform.position);
+            }
+        }
+    }
+
+    public void GroupTeleDeactivate()
+    {
+        carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            if (passengerIDs[i] != myID)
+            {
+                photonView.RPC("RemoteTeleIndicatorDeAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]));
+            }
+        }
+    }
+
 
     public void ButtonCheck()
     {
@@ -83,5 +131,29 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         {
             teleButtonCheck = false;
         }
+    }
+
+    [PunRPC]
+    void RemoteTeleIndicatorAcitve(Vector3 carpetChild, Vector3 carpet)  //*************** RPC for teleportation
+    {
+        platformObj = GameObject.Find("/ViewingSetup/Platform");
+        hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
+        teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
+
+        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
+        Vector3 translateVector = groundPosition - carpet;
+        teleportIndicator.transform.position = carpetChild + translateVector;
+
+        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
+        teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(true);
+    }
+
+    [PunRPC]
+    void RemoteTeleIndicatorDeAcitve()  //*************** RPC for teleportation
+    {
+        teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
+
+        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = false;
+        teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(false);
     }
 }
