@@ -1012,7 +1012,7 @@ MonoBehaviour:
   rayRadius: 0.02
   rayCastLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 819
   rayActivationAction:
     actionPath: /actions/default/in/PointingRayActivate
     needsReinit: 0
