@@ -58,7 +58,7 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
 
             carpet = PhotonNetwork.Instantiate("Interaction/carpet", Vector3.zero, Quaternion.identity);
             carpet.GetComponent<MeshRenderer>().enabled = false;
-            carpet.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = false;
+            carpet.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
             carpet.GetComponent<BoxCollider>().enabled = false;
         }
     }

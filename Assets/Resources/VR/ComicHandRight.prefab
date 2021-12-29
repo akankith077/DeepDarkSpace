@@ -1009,7 +1009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRayLength: 100
-  rayRadius: 0.03
+  rayRadius: 0.02
   rayCastLayers:
     serializedVersion: 2
     m_Bits: 4294967295
