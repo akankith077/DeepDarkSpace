@@ -303,6 +303,8 @@ GameObject:
   - component: {fileID: 6507390892443323344}
   - component: {fileID: 8257854410715067034}
   - component: {fileID: 4880900292443592206}
+  - component: {fileID: 7080023107723464571}
+  - component: {fileID: 1530061924784728625}
   m_Layer: 0
   m_Name: wristBand
   m_TagString: Untagged
@@ -350,7 +352,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 84fb035f7ee9a1b4299496d40b177647, type: 2}
+  - {fileID: 2100000, guid: 7d21b26c2f8427c4f8ec8a8439be9e03, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -371,6 +373,41 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &7080023107723464571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2664102344402950379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 1530061924784728625}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &1530061924784728625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2664102344402950379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5911a596432000b4086fe1852a986f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2995826232329257694
 GameObject:
   m_ObjectHideFlags: 0
@@ -958,6 +995,7 @@ MonoBehaviour:
   hmdObj: {fileID: 0}
   carpetObj: {fileID: 0}
   teleportIndicator: {fileID: 0}
+  passengers: 
 --- !u!114 &1931082550454580097
 MonoBehaviour:
   m_ObjectHideFlags: 0

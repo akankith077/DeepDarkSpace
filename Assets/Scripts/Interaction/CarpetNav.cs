@@ -53,9 +53,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
             if (groupTeleportationConfirm.GetStateDown(handType) && carpetObj != null)
             {
-                Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
-                Vector3 translateVector = teleportIndicator.transform.position - groundPosition;
-                carpetObj.transform.position += translateVector;
+                GroupTeleportation();
             }
             if (carpetObj != null)
             {
@@ -115,7 +113,22 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         {
             if (passengerIDs[i] != myID)
             {
-                photonView.RPC("RemoteTeleIndicatorDeAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]));
+                photonView.RPC("RemoteTeleIndicatorDeAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), false);
+            }
+        }
+    }
+
+    public void GroupTeleportation()
+    {
+        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
+        Vector3 translateVector = teleportIndicator.transform.position - groundPosition;
+        carpetObj.transform.position += translateVector;
+
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            if (passengerIDs[i] != myID)
+            {
+                photonView.RPC("RemoteTeleportation", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), carpetObj.transform.GetChild(0).position, carpetObj.transform.position);
             }
         }
     }
@@ -148,12 +161,27 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(true);
     }
 
+
     [PunRPC]
-    void RemoteTeleIndicatorDeAcitve()  //*************** RPC for teleportation
+    void RemoteTeleportation(Vector3 carpetChild, Vector3 carpet)  //*************** RPC for teleportation
+    {
+        platformObj = GameObject.Find("/ViewingSetup/Platform");
+        hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
+        teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
+
+        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
+
+        Vector3 translateVector = teleportIndicator.transform.position - groundPosition;
+
+        platformObj.transform.position += translateVector;
+    }
+
+        [PunRPC]
+    void RemoteTeleIndicatorDeAcitve(bool check)  //*************** RPC for teleportation
     {
         teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
 
-        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = false;
-        teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(false);
+        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = check;
+        teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(check);
     }
 }

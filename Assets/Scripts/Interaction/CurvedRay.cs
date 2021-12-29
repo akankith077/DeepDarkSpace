@@ -144,19 +144,19 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (stream.IsWriting)
         {
-            bool drawCheck = drawLine;
+            /*bool drawCheck = drawLine;
             stream.SendNext(drawCheck);
             stream.SendNext(controlPoints[0]);
             stream.SendNext(controlPoints[1]);
-            stream.SendNext(controlPoints[2]);
+            stream.SendNext(controlPoints[2]);*/
         }
         else
         {
-            bool drawcheck = (bool)stream.ReceiveNext();
+            /*bool drawcheck = (bool)stream.ReceiveNext();
             drawLine = drawcheck;
             controlPoints[0] = (Vector3)stream.ReceiveNext();
             controlPoints[1] = (Vector3)stream.ReceiveNext();
-            controlPoints[2] = (Vector3)stream.ReceiveNext();
+            controlPoints[2] = (Vector3)stream.ReceiveNext();*/
         }
     }
 }

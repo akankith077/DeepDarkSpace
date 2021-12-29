@@ -53,8 +53,6 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
 
             platformObject = controllerObject.gameObject.transform.parent.gameObject;
             rotateObject = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
-            teleportIndicator.transform.SetParent(platformObject.transform.parent.transform);
-            //curvRAY = teleportIndicator.GetComponent<CurvedRay>();
         }
     }
 
@@ -66,7 +64,6 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
             if (teleportAction.GetStateDown(handType))
             {
                 teleportEnabled = true;
-                //Debug.Log("Trigger value" + teleportationTriggerVal); 
             }
 
             if (teleportAction.GetStateUp(handType))
@@ -116,11 +113,9 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
         {
 
             teleportIndicator.transform.position = bezier.EndPoint; //Sets teleport indicator position
-            Vector3 IndicatorRotation = new Vector3(0, controllerObject.transform.eulerAngles.y - controllerObject.transform.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
+            Vector3 IndicatorRotation = new Vector3(0, rotateObject.transform.eulerAngles.y - rotateObject.transform.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
             teleportIndicator.transform.rotation = Quaternion.Euler(IndicatorRotation); //Set teleport indicator rotation mapped to controller rotation
-
-            //controllerVibration.Execute(0, 0.05f, 0.02f, 0.5f, handType);
-            new WaitForSeconds(0.2f);
+            //teleportIndicator.transform.forward  = rotateObject.transform.forward; 
             teleportIndicator.GetComponent<MeshRenderer>().enabled = true;
 
             if (teleportConfirmAction.GetStateDown(handType))

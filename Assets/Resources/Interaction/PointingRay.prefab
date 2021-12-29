@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2628391128906554601}
   - component: {fileID: 7099644382640240364}
   - component: {fileID: 4451026233498054042}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 7663716756696465158}
   - component: {fileID: 936373365121293667}
   - component: {fileID: 931288804384782177}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PointingRay
   m_TagString: Untagged
   m_Icon: {fileID: 0}

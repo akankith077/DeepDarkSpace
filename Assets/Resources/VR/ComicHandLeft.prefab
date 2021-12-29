@@ -76,7 +76,6 @@ GameObject:
   - component: {fileID: 567326804526184210}
   - component: {fileID: -5302241700880049288}
   - component: {fileID: -7919069177125612362}
-  - component: {fileID: 4096161841042955570}
   m_Layer: 2
   m_Name: ComicHandLeft
   m_TagString: Untagged
@@ -281,30 +280,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &4096161841042955570
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 615279445464024922}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24eccbf1c9dbaf84ca268472aaa6d372, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxRayLength: 100
-  rayRadius: 0.05
-  rayCastLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  rayActivationAction:
-    actionPath: /actions/default/in/PointingRayActivate
-    needsReinit: 0
-  rayDraggingAction:
-    actionPath: /actions/default/in/PointingRayDragging
-    needsReinit: 0
-  controllerHand: 1
 --- !u!1 &1069523056032978034
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,7 +706,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5840121412200549433}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c605a0e6dedbad94cb99a7070de34b59, type: 3}
   m_Name: 
@@ -756,7 +731,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7d21b26c2f8427c4f8ec8a8439be9e03, type: 2}
+  - {fileID: 2100000, guid: a170369e54d05d645899c2e25b45f8d3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -800,8 +775,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.07035923, g: 0.7607843, b: 1, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.8867924, g: 0.028098743, b: 0, a: 1}
+      key1: {r: 0.254717, g: 0, b: 0, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -842,7 +817,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5840121412200549433}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b631c371ff1acc84daa6d76cda280a7d, type: 3}
   m_Name: 
@@ -850,10 +825,10 @@ MonoBehaviour:
   bezier: {fileID: 5840121412200549434}
   handType: 1
   teleportAction:
-    actionPath: /actions/default/in/TeleportRayActive
+    actionPath: /actions/default/in/TeleActive
     needsReinit: 0
   teleportConfirmAction:
-    actionPath: /actions/default/in/Teleportation
+    actionPath: /actions/default/in/TeleConfirm
     needsReinit: 0
   snapLeftAction:
     actionPath: /actions/default/in/SnapLeft

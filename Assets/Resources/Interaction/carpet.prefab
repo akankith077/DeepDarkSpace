@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5594653344825323870}
   - component: {fileID: 7310218295819470868}
   - component: {fileID: 6077228288420523136}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ghostCarpet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 54406087450272153}
   - component: {fileID: 3595262479866037517}
   - component: {fileID: 8908163512759183505}
+  - component: {fileID: 503983853797969565}
   - component: {fileID: 705217131635018446}
   - component: {fileID: 6301230839340325081}
   - component: {fileID: 6574015693537615195}
@@ -189,6 +190,19 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &503983853797969565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6242070646624062440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 345a242b4f5135348a6bd7d380f05010, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shirtObject: {fileID: 0}
 --- !u!114 &705217131635018446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,7 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2d6c9a9ad605f47ab8d83583e636a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passengers: []
+  passengers: 
 --- !u!54 &2576694126206478842
 Rigidbody:
   m_ObjectHideFlags: 0

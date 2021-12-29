@@ -71,6 +71,8 @@ MonoBehaviour:
   - groupTeleUpdate
   - RemoteTeleIndicatorAcitve
   - RemoteTeleIndicatorLine
+  - RemoteTeleIndicatorDeAcitve
+  - RemoteTeleportation
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
