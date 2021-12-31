@@ -58,7 +58,6 @@ GameObject:
   - component: {fileID: 8534338402317863662}
   - component: {fileID: 8534338402328073102}
   - component: {fileID: 8629891866595618189}
-  - component: {fileID: 7914312301779090346}
   m_Layer: 0
   m_Name: Platform
   m_TagString: Untagged
@@ -164,7 +163,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8534338402316722636}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 39c5efea541cee148876025ac68d3862, type: 3}
   m_Name: 
@@ -173,34 +172,7 @@ MonoBehaviour:
   triggerAction:
     actionPath: /actions/default/in/SteeringTrigger
     needsReinit: 0
-  poseAction:
-    actionPath: /actions/default/in/Pose
-    needsReinit: 0
-  groundFollowing:
-    actionPath: /actions/default/in/GroundFollowActivDeactiv
-    needsReinit: 0
   maxSpeed: 5
---- !u!114 &7914312301779090346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8534338402316722636}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bdb648883ee02b48a0aa07b6a676b9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handType1: 2
-  handType2: 1
-  joystickPrimary:
-    actionPath: /actions/default/in/PositionJoystick
-    needsReinit: 0
-  joystickSecondary:
-    actionPath: /actions/default/in/RotationJoystick
-    needsReinit: 0
-  lastTurnTime: 0
 --- !u!1 &8534338402316722928
 GameObject:
   m_ObjectHideFlags: 0
