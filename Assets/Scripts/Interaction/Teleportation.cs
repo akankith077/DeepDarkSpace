@@ -39,7 +39,7 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
-            teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
+            teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
             teleportIndicator.GetComponent<MeshRenderer>().enabled = false;
             teleportEnabled = false;
             if (this.gameObject.name == "Bezier left")

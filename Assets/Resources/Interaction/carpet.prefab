@@ -244,6 +244,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passengers: 
+  carPos: []
+  listLength: 0
 --- !u!54 &2576694126206478842
 Rigidbody:
   m_ObjectHideFlags: 0

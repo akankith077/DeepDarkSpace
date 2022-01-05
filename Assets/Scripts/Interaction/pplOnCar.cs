@@ -7,21 +7,38 @@ using Photon.Realtime;
 public class pplOnCar : MonoBehaviourPunCallbacks
 {
     public Hashtable passenger;
+    private Vector3 initialCarPos;
+    private Vector3 newCarPos;
     public List<int> passengers = new List<int>();
+    public List<Vector3> carPos = new List<Vector3>();
+    private List<pplOnCar> ppls = new List<pplOnCar>();
     private int[] passengerIDs = { };
+    private int i = 0;
+    public int listLength = 0;
     void Start()
     {
-
+        
+        //List<Part> parts = new List<Part>();
+        //parts.Add(new Part() { PartName = "crank arm", PartId = 1234 });
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*for (int i = 0; i < passengerIDs.Length; i++)
+        initialCarPos = this.transform.position;
+        if (initialCarPos != newCarPos)
         {
-            Debug.Log("Passengers on the carpet are: " + passengerIDs[i]);
-        }*/
+            //ppls.Add(new pplOnCar() { Index = i, CarpetPos = newCarPos });
+            carPos.Add(initialCarPos);
+            newCarPos = initialCarPos;
+            //i++;
+        }
+        listLength = carPos.Count;
     }
+
+    public int Index { get; set; }
+
+    public Vector3 CarpetPos { get; set; }
 
     private void OnCollisionEnter(Collision collision) //*************** When user enters the carpet
     {
@@ -42,4 +59,15 @@ public class pplOnCar : MonoBehaviourPunCallbacks
     {
         get { return passengers; }
     }
+
+    public List<Vector3> carpetPosList
+    {
+        get { return carPos; }
+    }
+
+    public List<pplOnCar> carpetPositionsList
+    {
+        get { return ppls; }
+    }
+
 }

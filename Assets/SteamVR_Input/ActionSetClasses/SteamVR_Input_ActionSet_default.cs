@@ -89,6 +89,14 @@ namespace Valve.VR
             }
         }
         
+        public virtual SteamVR_Action_Boolean backToCar
+        {
+            get
+            {
+                return SteamVR_Actions.default_backToCar;
+            }
+        }
+        
         public virtual SteamVR_Action_Vibration Haptic
         {
             get

@@ -45,7 +45,7 @@ public class UserManager : MonoBehaviourPunCallbacks
                 leftHand.transform.SetParent(trackingLeftHand.transform, false);
                 rightHand.transform.SetParent(trackingRightHand.transform, false);
 
-                GameObject platform = GameObject.Find("/ViewingSetup/Platform");
+                GameObject platform = GameObject.Find("/ViewingSetup");
                 teleportIndicator.transform.SetParent(platform.transform, false);
             }
 

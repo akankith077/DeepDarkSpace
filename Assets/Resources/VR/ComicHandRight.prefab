@@ -321,7 +321,7 @@ Transform:
   m_GameObject: {fileID: 2664102344402950379}
   m_LocalRotation: {x: -0.69514984, y: -0, z: -0, w: 0.71886486}
   m_LocalPosition: {x: -0.0048, y: 0, z: -0.09}
-  m_LocalScale: {x: 0.29142871, y: 0.29142871, z: 0.29142871}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 3628430848063066868}
   m_RootOrder: 2
@@ -991,11 +991,24 @@ MonoBehaviour:
   groupTeleportationConfirm:
     actionPath: /actions/default/in/TeleConfirm
     needsReinit: 0
+  backToCar:
+    actionPath: /actions/default/in/backToCar
+    needsReinit: 0
+  groupCancel:
+    actionPath: 
+    needsReinit: 0
   platformObj: {fileID: 0}
   hmdObj: {fileID: 0}
   carpetObj: {fileID: 0}
+  oldCarpet: {fileID: 0}
   teleportIndicator: {fileID: 0}
+  nextPos: {x: 0, y: 0, z: 0}
   passengers: 
+  carpetPosList: []
+  index: 0
+  onCarpet: 0
+  grouped: 0
+  backToCarCheck: 0
 --- !u!114 &1931082550454580097
 MonoBehaviour:
   m_ObjectHideFlags: 0

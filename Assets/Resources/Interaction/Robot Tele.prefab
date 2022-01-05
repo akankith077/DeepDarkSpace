@@ -156,7 +156,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 345a242b4f5135348a6bd7d380f05010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shirtObject: {fileID: 4587529480885316230}
 --- !u!120 &6148633742378481990
 LineRenderer:
   m_ObjectHideFlags: 0

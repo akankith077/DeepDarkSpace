@@ -12,17 +12,26 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     public SteamVR_Action_Boolean groupTeleportationActive;
     public SteamVR_Action_Boolean groupTeleportationConfirm;
+    public SteamVR_Action_Boolean backToCar;
+    public SteamVR_Action_Boolean groupCancel;
 
     public GameObject platformObj;
     public GameObject hmdObj;
     public GameObject carpetObj;
+    public GameObject oldCarpet;
     public GameObject teleportIndicator;
+    public Vector3 nextPos;
 
     public List<int> passengers = new List<int>();
+    public List<Vector3> carpetPosList = new List<Vector3>();
     private int[] passengerIDs = { };
+    public int index = 0;
     private float myID = 0;
 
     private bool teleButtonCheck = false;
+    public bool onCarpet = false;
+    public bool grouped = false;
+    public bool backToCarCheck = false;
 
     void Start()
     {
@@ -30,7 +39,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         {
             platformObj = GameObject.Find("/ViewingSetup/Platform");
             hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
-            teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
+            teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
             myID = transform.GetComponent<PhotonView>().OwnerActorNr;
         }
     }
@@ -68,9 +77,41 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                     Debug.Log(passengerIDs[i]);
                 }
             }
-            if (carpetObj == null)
+            else
             {
                 this.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = false;
+            }
+            if (onCarpet == false && grouped == true && backToCarCheck == true)
+            {
+                /*for (float i = 0; i <= 1; i++) //ANIMATION FOR GROUPED BUT OUTSIDE CARPET
+                { 
+                    GameObject wristBand = this.gameObject.transform.GetChild(2).gameObject;
+                    Vector3 anim = (wristBand.transform.localScale.x, i, 0.3f);
+                    wristBand.transform.localScale.y += 1;
+                }*/
+
+                carpetPosList = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList;
+                
+                nextPos = carpetPosList[index];
+                teleportIndicator.transform.position = nextPos;
+                teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
+                teleportIndicator.transform.GetComponent<CurvedRay>().GetDrawLine(true);
+
+            }
+            else if (onCarpet == false && grouped == true && backToCar.GetStateUp(SteamVR_Input_Sources.LeftHand))
+            {
+                teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = false;
+                teleportIndicator.transform.GetComponent<CurvedRay>().GetDrawLine(false);
+                Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
+
+                Vector3 translateVector = teleportIndicator.transform.position - groundPosition;
+
+                platformObj.transform.position += translateVector;
+
+                if (index < carpetPosList.Count)
+                {
+                    index++;
+                }
             }
         }
     }
@@ -80,13 +121,18 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (collision.gameObject.name == "carpet(Clone)")
         {
             carpetObj = collision.gameObject;
+            oldCarpet = carpetObj;
+            grouped = true;
+            onCarpet = true;
         }
     }
     private void OnCollisionExit(Collision collision) //*************** When user enters the carpet
     {
         if (collision.gameObject.name == "carpet(Clone)")
         {
+            index = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList.Count - 1;
             carpetObj = null;
+            onCarpet = false;
         }
     }
 
@@ -105,6 +151,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             }
         }
     }
+
+
 
     public void GroupTeleDeactivate()
     {
@@ -144,6 +192,14 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         {
             teleButtonCheck = false;
         }
+        if (backToCar.GetStateDown(SteamVR_Input_Sources.LeftHand))
+        {
+            backToCarCheck = true;
+        }
+        else if (backToCar.GetStateUp(SteamVR_Input_Sources.LeftHand))
+        {
+            backToCarCheck = false;
+        }
     }
 
     [PunRPC]
@@ -151,7 +207,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     {
         platformObj = GameObject.Find("/ViewingSetup/Platform");
         hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
-        teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
+        teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
 
         Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
         Vector3 translateVector = groundPosition - carpet;
@@ -167,7 +223,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     {
         platformObj = GameObject.Find("/ViewingSetup/Platform");
         hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
-        teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
+        teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
 
         Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
 
@@ -179,7 +235,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         [PunRPC]
     void RemoteTeleIndicatorDeAcitve(bool check)  //*************** RPC for teleportation
     {
-        teleportIndicator = GameObject.Find("/ViewingSetup/Platform/TELE");
+        teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
 
         teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = check;
         teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(check);
