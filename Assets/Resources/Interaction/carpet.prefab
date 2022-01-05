@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 6574015693537615195}
   - component: {fileID: -4250781470739958475}
   - component: {fileID: 2576694126206478842}
+  - component: {fileID: 7134997325237810308}
   m_Layer: 2
   m_Name: carpet
   m_TagString: Untagged
@@ -242,6 +243,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 705217131635018446}
   - {fileID: 6301230839340325081}
+  - {fileID: 7134997325237810308}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -272,7 +274,7 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 1
-  m_Animate: 1
+  m_Animate: 0
   m_UseWorldTransform: 0
 --- !u!65 &6574015693537615195
 BoxCollider:
@@ -318,3 +320,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 3
+--- !u!114 &7134997325237810308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6242070646624062440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8922ed4ec10d61c4486e7d549cae65a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

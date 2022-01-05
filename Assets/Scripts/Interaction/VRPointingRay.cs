@@ -84,12 +84,20 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
             //if (!draggedObject)
 
             currentHit = ComputeIntersection(ray);
-            
+            /*if(currentHit.transform.name == "carpet") //To Resize carpet
+            {
+
+            }*/
             UpdateRayTransform(currentHit, ray);
             rayVisCylinder.GetComponentInChildren<MeshRenderer>().enabled = true;
             //Debug.Log("HIT OBJECT NAME  ===  " + currentHit.collider.name);
             if (rayDraggingAction.GetStateDown(handType))
             {
+                if (!carpet.GetComponent<PhotonView>().IsMine)
+                {
+                    carpet.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                    carpet.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                }
                 carpet.transform.position = currentHit.point;
                 carpet.GetComponentInChildren<MeshRenderer>().enabled = true;
                 carpet.GetComponent<BoxCollider>().enabled = true;
