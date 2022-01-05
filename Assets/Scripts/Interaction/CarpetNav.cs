@@ -27,6 +27,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     private int[] passengerIDs = { };
     public int index = 0;
     private float myID = 0;
+    private float otherID = 0;
 
     private bool teleButtonCheck = false;
     public bool onCarpet = false;
@@ -54,10 +55,13 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             if (teleButtonCheck && carpetObj != null)
             {
                 GroupTeleActive();
+                //otherID = carpetObj.GetComponent<PhotonView>().CreatorActorNr;
+                carpetObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
             }
             if (groupTeleportationActive.GetStateUp(handType) && carpetObj != null)
             {
                 GroupTeleDeactivate();
+                carpetObj.GetComponent<PhotonView>().TransferOwnership(carpetObj.GetComponent<PhotonView>().CreatorActorNr);
             }
 
             if (groupTeleportationConfirm.GetStateDown(handType) && carpetObj != null)
