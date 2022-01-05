@@ -57,11 +57,14 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 GroupTeleActive();
                 //otherID = carpetObj.GetComponent<PhotonView>().CreatorActorNr;
                 carpetObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                carpetObj.transform.GetChild(2).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+
             }
             if (groupTeleportationActive.GetStateUp(handType) && carpetObj != null)
             {
                 GroupTeleDeactivate();
                 carpetObj.GetComponent<PhotonView>().TransferOwnership(carpetObj.GetComponent<PhotonView>().CreatorActorNr);
+                carpetObj.transform.GetChild(2).GetComponent<PhotonView>().TransferOwnership(carpetObj.GetComponent<PhotonView>().CreatorActorNr);
             }
 
             if (groupTeleportationConfirm.GetStateDown(handType) && carpetObj != null)
