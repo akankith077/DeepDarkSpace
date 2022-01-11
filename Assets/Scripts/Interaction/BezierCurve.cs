@@ -8,6 +8,8 @@ public class BezierCurve : MonoBehaviourPunCallbacks, IPunObservable
 {
     public bool endPointDetected;
 
+    public LayerMask rayCastLayers;
+
     public Vector3 EndPoint
     {
         get { return endpoint; }
@@ -29,7 +31,7 @@ public class BezierCurve : MonoBehaviourPunCallbacks, IPunObservable
     {
         controlPoints = new Vector3[3];
         curvedLine.enabled = false;
-        extendStep = 18f;
+        extendStep = 20f;
         if (this.gameObject.name == "Bezier left")
         {
             controllerObject = GameObject.Find("/ViewingSetup/Platform/ControllerLeft");
@@ -133,7 +135,7 @@ public class BezierCurve : MonoBehaviourPunCallbacks, IPunObservable
     {
         Ray r = new Ray(start, end - start);
         RaycastHit hit;
-        if (Physics.Raycast(r, out hit, Vector3.Distance(start, end)))
+        if (Physics.Raycast(r, out hit, Vector3.Distance(start, end), rayCastLayers))
         {
             endpoint = hit.point;
             return true;

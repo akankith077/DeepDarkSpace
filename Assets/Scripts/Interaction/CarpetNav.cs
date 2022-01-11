@@ -20,6 +20,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public GameObject carpetObj;
     public GameObject oldCarpet;
     public GameObject teleportIndicator;
+    private GameObject leftHand;
     public Vector3 nextPos;
 
     public List<int> passengers = new List<int>();
@@ -42,6 +43,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
             teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
             myID = transform.GetComponent<PhotonView>().OwnerActorNr;
+            leftHand = GameObject.Find("/ViewingSetup/Platform/ControllerLeft/ComicHandLeft(Clone)");
         }
     }
 
@@ -78,6 +80,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             if (carpetObj != null)
             {
                 this.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = true;
+                leftHand.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = true;
                 passengers = carpetObj.GetComponent<pplOnCar>().carpetList;
                 passengerIDs = passengers.ToArray();
 
@@ -91,6 +94,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             else
             {
                 this.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = false;
+
+                leftHand.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = false;
             }
             if (onCarpet == false && grouped == true && backToCarCheck == true)
             {

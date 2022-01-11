@@ -17,7 +17,11 @@ public class pplOnCar : MonoBehaviourPunCallbacks
     public int listLength = 0;
     void Start()
     {
-        
+        if (photonView.IsMine)
+        {
+            string shirtColor = PlayerPrefs.GetString(GlobalSettings.colorPrefKey);
+            this.photonView.RPC("SetCarpetColor", RpcTarget.AllBuffered, new object[] { shirtColor });
+        }
         //List<Part> parts = new List<Part>();
         //parts.Add(new Part() { PartName = "crank arm", PartId = 1234 });
     }
@@ -42,17 +46,23 @@ public class pplOnCar : MonoBehaviourPunCallbacks
 
     private void OnCollisionEnter(Collision collision) //*************** When user enters the carpet
     {
-        int checkID = collision.gameObject.GetComponent<PhotonView>().OwnerActorNr;
-        string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
-        passengers.Add(checkID);
-        passengerIDs = passengers.ToArray();
+        if (collision.transform.name != "carpet(clone)")
+        {
+            int checkID = collision.gameObject.GetComponent<PhotonView>().OwnerActorNr;
+            string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
+            passengers.Add(checkID);
+            passengerIDs = passengers.ToArray();
+        }
     }
     private void OnCollisionExit(Collision collision) //*************** When user enters the carpet
     {
-        int checkID = collision.gameObject.GetComponent<PhotonView>().OwnerActorNr;
-        string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
-        passengers.Remove(checkID);
-        passengerIDs = passengers.ToArray();
+        if (collision.transform.name != "carpet(clone)")
+        {
+            int checkID = collision.gameObject.GetComponent<PhotonView>().OwnerActorNr;
+            string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
+            passengers.Remove(checkID);
+            passengerIDs = passengers.ToArray();
+        }
     }
 
     public List<int> carpetList
@@ -70,4 +80,12 @@ public class pplOnCar : MonoBehaviourPunCallbacks
         get { return ppls; }
     }
 
+    [PunRPC]
+    void SetCarpetColor(string colorName)
+    {
+        Material shirtMaterial = Resources.Load<Material>(GlobalSettings.shirtMaterialsPath + colorName);
+        Material TranspShirtMaterial = Resources.Load<Material>(GlobalSettings.shirtMaterialsPath + colorName + " 1");
+        this.GetComponent<Renderer>().material = shirtMaterial;
+        transform.GetChild(0).GetComponent<Renderer>().material = TranspShirtMaterial;
+    }
 }

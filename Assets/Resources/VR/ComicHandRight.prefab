@@ -456,6 +456,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   endPointDetected: 0
+  rayCastLayers:
+    serializedVersion: 2
+    m_Bits: 819
   curvedLine: {fileID: 4016317363926609326}
 --- !u!120 &4016317363926609326
 LineRenderer:
@@ -1025,7 +1028,7 @@ MonoBehaviour:
   rayRadius: 0.02
   rayCastLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 307
   rayActivationAction:
     actionPath: /actions/default/in/PointingRayActivate
     needsReinit: 0

@@ -111,7 +111,6 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (bezierCheck)
         {
-
             teleportIndicator.transform.position = bezier.EndPoint; //Sets teleport indicator position
             Vector3 IndicatorRotation = new Vector3(0, rotateObject.transform.eulerAngles.y - rotateObject.transform.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
             teleportIndicator.transform.rotation = Quaternion.Euler(IndicatorRotation); //Set teleport indicator rotation mapped to controller rotation
@@ -132,7 +131,7 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
                 Vector3 groundPosition = new Vector3(rotateObject.transform.position.x, platformObject.transform.position.y, rotateObject.transform.position.z);
 
                 Vector3 translateVector = bezier.EndPoint - groundPosition;
-
+                teleportIndicator.transform.position -= rotateObject.transform.forward; 
                 platformObject.transform.position += translateVector;
 
                 //platformObject.transform.RotateAround(rotateObject.transform.position, Vector3.up, -ControllerRotation); //Sets the User rotaion as the indicator rotation

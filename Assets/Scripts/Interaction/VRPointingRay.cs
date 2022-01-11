@@ -14,6 +14,7 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
 
     public float maxRayLength = 100.0f;
     public float rayRadius = 0.05f;
+    public float myID = 0;
     public LayerMask rayCastLayers;
 
     public SteamVR_Action_Boolean rayActivationAction;
@@ -22,14 +23,20 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
 
     private SteamVR_Input_Sources handType;
     private GameObject controllerObject;
+    private GameObject viewingSetup;
     private GameObject rayVisCylinder;
     private GameObject carpet;
+    private GameObject hitObj;
     private bool rayCastActive = false;
     private bool carpetActive = false;
+    private bool resize = false;
+    private bool carpetFound = false;
     private RaycastHit currentHit;
 
     private DraggableObject requestedOwnershipObject;
     private DraggableObject draggedObject;
+
+    private Vector3 hitObjPoint;
 
     void Awake()
     {
@@ -40,6 +47,8 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
     {
         if (photonView.IsMine)
         {
+            viewingSetup = GameObject.Find("/ViewingSetup");
+            myID = transform.GetComponent<PhotonView>().OwnerActorNr;
             if (controllerHand == HandSide.Left)
             {
                 handType = SteamVR_Input_Sources.LeftHand;
@@ -57,6 +66,7 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
             rayVisCylinder.transform.SetParent(controllerObject.transform);
 
             carpet = PhotonNetwork.Instantiate("Interaction/carpet", Vector3.zero, Quaternion.identity);
+            carpet.transform.SetParent(viewingSetup.transform, false);
             carpet.GetComponent<MeshRenderer>().enabled = false;
             carpet.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
             carpet.GetComponent<BoxCollider>().enabled = false;
@@ -76,6 +86,7 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
         {
             ActivateRayCast(false);
             rayVisCylinder.GetComponentInChildren<MeshRenderer>().enabled = false;
+            carpetFound = false;
         }
 
         if (rayCastActive)
@@ -84,14 +95,22 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
             //if (!draggedObject)
 
             currentHit = ComputeIntersection(ray);
-            /*if(currentHit.transform.name == "carpet") //To Resize carpet
-            {
-
-            }*/
             UpdateRayTransform(currentHit, ray);
             rayVisCylinder.GetComponentInChildren<MeshRenderer>().enabled = true;
             //Debug.Log("HIT OBJECT NAME  ===  " + currentHit.collider.name);
-            if (rayDraggingAction.GetStateDown(handType))
+            if (currentHit.collider)
+            {
+                if (currentHit.collider.name == "Collider") //To Resize carpet
+                {
+                    hitObj = currentHit.transform.gameObject;
+                    //Debug.Log("HIT OBJECT NAME  Parent Name ===  " + hitObj.transform.parent.gameObject.name);
+                    //hitObj.transform.GetChild(1).transform.gameObject.layer = 2;
+                    carpetFound = true;
+                    hitObjPoint = currentHit.transform.position;
+                }
+            }
+            
+            if (rayDraggingAction.GetStateDown(handType) && carpetFound == false)
             {
                 if (!carpet.GetComponent<PhotonView>().IsMine)
                 {
@@ -102,7 +121,6 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                 carpet.GetComponentInChildren<MeshRenderer>().enabled = true;
                 carpet.GetComponent<BoxCollider>().enabled = true;
                 carpetActive = true;
-                
 
                 /*if (currentHit.collider)
                 {
@@ -116,16 +134,58 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                     }
                 }*/
             }
-            if (rayDraggingAction.GetStateUp(handType))
+            if (carpetActive) //CREATION OF CARPET
             {
-                carpetActive = false;
-            }
-             if(carpetActive)
-            {
-                float  carpetSize = Vector3.Distance(carpet.transform.position, currentHit.point);
-                Debug.Log("Carpet size" + carpetSize);
+                float carpetSize = Vector3.Distance(new Vector3(carpet.transform.position.x, 0, carpet.transform.position.z), new Vector3(currentHit.point.x, 0, currentHit.point.z));
+                //Debug.Log("Carpet size" + carpetSize);
+                if (carpetSize > 3)
+                {
+                    carpetSize = 3;
+                }
                 carpet.transform.localScale = new Vector3(carpetSize, 1.0f, carpetSize);
                 //carpet.GetComponent<BoxCollider>().size = new Vector3(carpetSize, 2.0f, carpetSize);
+            }
+
+
+            if (carpetFound) //RESIZING OF CARPET
+            {
+                if (rayDraggingAction.GetStateDown(handType))
+                {
+                    if (!hitObj.GetComponent<PhotonView>().IsMine)
+                    {
+                        hitObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                        hitObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                    }
+                    resize = true;
+                    hitObj.transform.GetChild(1).transform.gameObject.layer = 2;
+
+                }
+            }
+
+           
+            if (resize)
+            {
+                float carpetSize = Vector3.Distance(new Vector3(hitObjPoint.x, 0, hitObjPoint.z), new Vector3(currentHit.point.x, 0, currentHit.point.z));
+                if (carpetSize > 3)
+                {
+                    carpetSize = 3;
+                }
+                hitObj.transform.localScale = new Vector3(carpetSize, 1.0f, carpetSize);
+            }
+
+            if (rayDraggingAction.GetStateUp(handType))
+            {
+                if (resize)
+                {
+                    hitObj.transform.GetChild(1).transform.gameObject.layer = 0;
+                    if (hitObj.GetComponent<PhotonView>().CreatorActorNr != myID)
+                    {
+                        hitObj.GetComponent<PhotonView>().TransferOwnership(hitObj.GetComponent<PhotonView>().CreatorActorNr);
+                        hitObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(hitObj.GetComponent<PhotonView>().CreatorActorNr);
+                    }
+                    resize = false;
+                }
+                carpetActive = false;
             }
         }
 
