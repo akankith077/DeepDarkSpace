@@ -40,6 +40,11 @@ public class pplOnCar : MonoBehaviourPunCallbacks
         listLength = carPos.Count;
     }
 
+    public void ChangeCarColour(string colour)
+    {
+        this.photonView.RPC("SetCarpetColor", RpcTarget.AllBuffered, new object[] { colour });
+    }
+
     public int Index { get; set; }
 
     public Vector3 CarpetPos { get; set; }
