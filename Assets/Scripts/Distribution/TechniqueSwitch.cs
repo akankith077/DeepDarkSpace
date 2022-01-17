@@ -22,14 +22,14 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
             {
                 GetComponent<CarpetNav>().enabled = true;
                 GetComponent<CarpetNavOwnerTransf>().enabled = false;
-                photonView.RPC("SwitchingTechnique", RpcTarget.AllBuffered, new object[] { withNavigator });
+                photonView.RPC("SwitchingTechnique", RpcTarget.AllViaServer, new object[] { withNavigator });
             }
             if ((withNavigator == true) && (GetComponent<CarpetNav>().enabled == true))
             {
                 GetComponent<CarpetNav>().enabled = false;
                 GetComponent<CarpetNavOwnerTransf>().enabled = true;
                 //Debug.Log("In the SWITCH LOOP");
-                photonView.RPC("SwitchingTechnique", RpcTarget.AllBuffered, new object[] { withNavigator });
+                photonView.RPC("SwitchingTechnique", RpcTarget.AllViaServer, new object[] { withNavigator });
             }
         }
     }
@@ -37,8 +37,9 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
     [PunRPC]
     void SwitchingTechnique(bool check)
     {   
-        GetComponent<CarpetNav>().enabled = !check;
-        GetComponent<CarpetNavOwnerTransf>().enabled = check;
+        GameObject Hand = GameObject.Find("/ViewingSetup/Platform/ControllerLeft/ComicHandRight(Clone)");
+        Hand.GetComponent<CarpetNav>().enabled = !check;
+        Hand.GetComponent<CarpetNavOwnerTransf>().enabled = check;
         Debug.Log("RPC Recieved to " + GetComponent<PhotonView>().OwnerActorNr);
     }
 }
