@@ -9,33 +9,36 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        this.GetComponent<CarpetNav>().enabled = true;
-        this.GetComponent<CarpetNavOwnerTransf>().enabled = false;
+        GetComponent<CarpetNav>().enabled = true;
+        GetComponent<CarpetNavOwnerTransf>().enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!withNavigator && this.GetComponent<CarpetNav>().enabled == false)
+        if (photonView.IsMine)
         {
-            this.GetComponent<CarpetNav>().enabled = true;
-            this.GetComponent<CarpetNavOwnerTransf>().enabled = false; 
-            this.photonView.RPC("SwitchingTechnique", RpcTarget.AllBuffered, new object[] { withNavigator });
-        }
-        if (withNavigator && this.GetComponent<CarpetNavOwnerTransf>().enabled == false)
-        {
-            this.GetComponent<CarpetNav>().enabled = false;
-            this.GetComponent<CarpetNavOwnerTransf>().enabled = true;
-            //Debug.Log("In the SWITCH LOOP");
-            this.photonView.RPC("SwitchingTechnique", RpcTarget.AllBuffered, new object[] { withNavigator });
+            if ((withNavigator == false) && (GetComponent<CarpetNavOwnerTransf>().enabled == true))
+            {
+                GetComponent<CarpetNav>().enabled = true;
+                GetComponent<CarpetNavOwnerTransf>().enabled = false;
+                photonView.RPC("SwitchingTechnique", RpcTarget.AllBuffered, new object[] { withNavigator });
+            }
+            if ((withNavigator == true) && (GetComponent<CarpetNav>().enabled == true))
+            {
+                GetComponent<CarpetNav>().enabled = false;
+                GetComponent<CarpetNavOwnerTransf>().enabled = true;
+                //Debug.Log("In the SWITCH LOOP");
+                photonView.RPC("SwitchingTechnique", RpcTarget.AllBuffered, new object[] { withNavigator });
+            }
         }
     }
 
     [PunRPC]
     void SwitchingTechnique(bool check)
-    {
-        this.GetComponent<CarpetNav>().enabled = !check;
-        this.GetComponent<CarpetNavOwnerTransf>().enabled = check;
+    {   
+        GetComponent<CarpetNav>().enabled = !check;
+        GetComponent<CarpetNavOwnerTransf>().enabled = check;
         Debug.Log("RPC Recieved to " + GetComponent<PhotonView>().OwnerActorNr);
     }
 }
