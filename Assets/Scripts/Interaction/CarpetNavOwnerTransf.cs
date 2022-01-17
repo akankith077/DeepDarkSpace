@@ -121,6 +121,19 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
                     index++;
                 }
             }
+
+            if (carpetObj != null && carpetObj.GetComponent<PhotonView>().IsMine)
+            {
+                carpIsMine = true; 
+                
+                Debug.Log("This is my carpet" + carpIsMine);
+            }
+            else
+            {
+                carpIsMine = false;
+                
+                Debug.Log("This is my carpet" + carpIsMine);
+            }
         }
     }
 
@@ -129,26 +142,12 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
         if (collision.gameObject.name == "carpet(Clone)")
         {
             carpetObj = collision.gameObject;
-            if (carpetObj.GetComponent<PhotonView>().IsMine)
-            {
-                carpIsMine = true;
-            }
-            else
-            {
-                carpIsMine = false;
-            }
+            
             oldCarpet = carpetObj;
             grouped = true;
             onCarpet = true;
         }
-        if(collision.gameObject.name == "ComicHandRight(Clone)")
-        {   
-            otherHand = collision.gameObject;
-            if (this.transform.position.y > minHandHeight)
-            {
-                TransferOwner();
-            }
-        }
+       
     }
     private void OnCollisionExit(Collision collision) //*************** When user enters the carpet
     {
@@ -158,6 +157,15 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
             carpetObj = null;
             onCarpet = false;
         }
+
+         if(collision.gameObject.name == "ComicHandRight(Clone)")
+        {   
+            otherHand = collision.gameObject;
+            /*if (this.transform.parent.transform.position.y > minHandHeight)
+            {*/
+                TransferOwner();
+            //}
+        }
     }
 
 
@@ -166,18 +174,20 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
         if (carpetObj != null)
         {
             if (!carpIsMine)
-            {
+            {   
                 carpetObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                 carpetObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                 carpetObj.transform.GetChild(1).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                 string shirtColor = PlayerPrefs.GetString(GlobalSettings.colorPrefKey);
                 carpetObj.GetComponent<pplOnCar>().ChangeCarColour(shirtColor);
 
-                carpIsMine = true;
+                //carpIsMine = true;
             }
             else
-            {
-                carpIsMine = false;
+            {   
+                
+                Debug.Log("OWNERSHIP  TRANSFERED");
+                //carpIsMine = false;
             }
         }
     }
