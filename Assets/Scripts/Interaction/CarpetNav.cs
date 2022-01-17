@@ -85,11 +85,11 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 passengerIDs = passengers.ToArray();
 
 
-                Debug.Log("Passengers on the carpet are: ");
+                /*Debug.Log("Passengers on the carpet are: ");
                 for (int i = 0; i < passengerIDs.Length; i++)
                 {
                     Debug.Log(passengerIDs[i]);
-                }
+                }*/
             }
             else
             {

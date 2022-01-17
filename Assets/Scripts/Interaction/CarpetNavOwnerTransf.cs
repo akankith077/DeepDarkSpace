@@ -28,7 +28,7 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
     private int[] passengerIDs = { };
     public int index = 0;
     private float myID = 0;
-    public float minHandHeight = 1.1f;
+    public float minHandHeight = 0f;
 
     private bool teleButtonCheck = false;
     public bool onCarpet = false;
@@ -77,11 +77,11 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
                 passengerIDs = passengers.ToArray();
 
 
-                Debug.Log("Passengers on the carpet are: ");
+                /*Debug.Log("Passengers on the carpet are: ");
                 for (int i = 0; i < passengerIDs.Length; i++)
                 {
                     Debug.Log(passengerIDs[i]);
-                }
+                }*/
             }
             else
             {
@@ -126,7 +126,7 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
             {
                 carpIsMine = true; 
                 
-                Debug.Log("This is my carpet" + carpIsMine);
+                Debug.Log("This is my carpet  " + carpIsMine);
             }
             else
             {
@@ -150,7 +150,8 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
        
     }
     private void OnCollisionExit(Collision collision) //*************** When user enters the carpet
-    {
+    {   
+        Debug.Log("The Colllided Object Name is " + collision.gameObject.name);
         if (collision.gameObject.name == "carpet(Clone)")
         {
             index = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList.Count - 1;
@@ -161,10 +162,10 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
          if(collision.gameObject.name == "ComicHandRight(Clone)")
         {   
             otherHand = collision.gameObject;
-            /*if (this.transform.parent.transform.position.y > minHandHeight)
-            {*/
+            if (this.transform.parent.transform.position.y > minHandHeight)
+            {
                 TransferOwner();
-            //}
+            }
         }
     }
 
@@ -185,7 +186,6 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
             }
             else
             {   
-                
                 Debug.Log("OWNERSHIP  TRANSFERED");
                 //carpIsMine = false;
             }

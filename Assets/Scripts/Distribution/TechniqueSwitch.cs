@@ -26,7 +26,7 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
         {
             this.GetComponent<CarpetNav>().enabled = false;
             this.GetComponent<CarpetNavOwnerTransf>().enabled = true;
-            Debug.Log("In the SWITCH LOOP");
+            //Debug.Log("In the SWITCH LOOP");
             this.photonView.RPC("SwitchingTechnique", RpcTarget.AllBuffered, new object[] { withNavigator });
         }
     }
@@ -36,5 +36,6 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
     {
         this.GetComponent<CarpetNav>().enabled = !check;
         this.GetComponent<CarpetNavOwnerTransf>().enabled = check;
+        Debug.Log("RPC Recieved to " + GetComponent<PhotonView>().OwnerActorNr);
     }
 }
