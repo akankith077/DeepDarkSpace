@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-public class TechniqueSwitch : MonoBehaviourPunCallbacks
+public class TechniqueSwitch : MonoBehaviourPunCallbacks, IPunObservable
 {
     public bool withNavigator = false;
     // Start is called before the first frame update
@@ -16,7 +16,7 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        if (photonView.IsMine)
+        /*if (photonView.IsMine)
         {
             if ((withNavigator == false) && (GetComponent<CarpetNavOwnerTransf>().enabled == true))
             {
@@ -31,10 +31,23 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
                 //Debug.Log("In the SWITCH LOOP");
                 photonView.RPC("SwitchingTechnique", RpcTarget.AllViaServer, new object[] { withNavigator });
             }
+        }*/
+    }
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            bool teleIndiCheck = withNavigator;
+            stream.SendNext(teleIndiCheck);
+        }
+        else
+        {
+            bool teleIndiCheck = (bool)stream.ReceiveNext();
+            withNavigator = teleIndiCheck;
         }
     }
 
-    [PunRPC]
+   /* [PunRPC]
     void SwitchingTechnique(bool check)
     {   
          if (photonView.IsMine)
@@ -44,5 +57,5 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
         Hand.GetComponent<CarpetNavOwnerTransf>().enabled = check;
         Debug.Log("RPC Recieved to " + Hand.GetComponent<PhotonView>().OwnerActorNr);
         }
-    }
+    }*/
 }
