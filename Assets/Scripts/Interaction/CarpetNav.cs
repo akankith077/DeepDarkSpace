@@ -34,6 +34,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public bool onCarpet = false;
     public bool grouped = false;
     public bool backToCarCheck = false;
+    public bool navigatorMode = false;
+    public bool carpIsMine = false;
 
     void Start()
     {
@@ -56,20 +58,41 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
             if (teleButtonCheck && carpetObj != null)
             {
-                if (!carpetObj.GetComponent<PhotonView>().IsMine)
+                if (!navigatorMode)
                 {
-                    carpetObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
-                    carpetObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                    if (!carpetObj.GetComponent<PhotonView>().IsMine)
+                    {
+                        carpetObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                        carpetObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                    }
+                    GroupTeleActive();
                 }
-                GroupTeleActive();
+                else
+                {
+                    if (carpetObj.GetComponent<PhotonView>().IsMine)
+                    {
+                        GroupTeleActive();
+                    }
+                }
             }
             if (groupTeleportationActive.GetStateUp(handType) && carpetObj != null)
             {
-                GroupTeleDeactivate();
-                if (carpetObj.GetComponent<PhotonView>().CreatorActorNr != myID)
+
+                if (!navigatorMode)
                 {
-                    carpetObj.GetComponent<PhotonView>().TransferOwnership(carpetObj.GetComponent<PhotonView>().CreatorActorNr);
-                    carpetObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(carpetObj.GetComponent<PhotonView>().CreatorActorNr);
+                    GroupTeleDeactivate();
+                    if (carpetObj.GetComponent<PhotonView>().CreatorActorNr != myID)
+                    {
+                        carpetObj.GetComponent<PhotonView>().TransferOwnership(carpetObj.GetComponent<PhotonView>().CreatorActorNr);
+                        carpetObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(carpetObj.GetComponent<PhotonView>().CreatorActorNr);
+                    }
+                }
+                else
+                {
+                    if (carpetObj.GetComponent<PhotonView>().IsMine)
+                    {
+                        GroupTeleDeactivate();
+                    }
                 }
             }
 
@@ -84,12 +107,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 passengers = carpetObj.GetComponent<pplOnCar>().carpetList;
                 passengerIDs = passengers.ToArray();
 
-
-                /*Debug.Log("Passengers on the carpet are: ");
-                for (int i = 0; i < passengerIDs.Length; i++)
-                {
-                    Debug.Log(passengerIDs[i]);
-                }*/
             }
             else
             {
@@ -197,6 +214,21 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         }
     }
 
+    public void carpetOwnershipCheck()
+    {
+        if (carpetObj != null && carpetObj.GetComponent<PhotonView>().IsMine)
+        {
+            carpIsMine = true;
+
+            //Debug.Log("This is my carpet  " + carpIsMine);
+        }
+        else
+        {
+            carpIsMine = false;
+
+            //Debug.Log("This is my carpet" + carpIsMine);
+        }
+    }
 
     public void ButtonCheck()
     {
@@ -215,6 +247,27 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         else if (backToCar.GetStateUp(SteamVR_Input_Sources.LeftHand))
         {
             backToCarCheck = false;
+        }
+    }
+
+    public void TransferOwner()
+    {
+        if (carpetObj != null)
+        {
+            if (!carpetObj.GetComponent<PhotonView>().IsMine)
+            {
+                carpetObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                carpetObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                carpetObj.transform.GetChild(1).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                string shirtColor = PlayerPrefs.GetString(GlobalSettings.colorPrefKey);
+                carpetObj.GetComponent<pplOnCar>().ChangeCarColour(shirtColor);
+                //carpIsMine = true;
+            }
+            else
+            {
+                Debug.Log("OWNERSHIP  TRANSFERED");
+                //carpIsMine = false;
+            }
         }
     }
 
