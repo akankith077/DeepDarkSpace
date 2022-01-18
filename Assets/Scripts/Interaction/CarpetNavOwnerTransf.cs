@@ -122,18 +122,18 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
                 }
             }
 
-            /*if (carpetObj != null && carpetObj.GetComponent<PhotonView>().IsMine)
+            if (carpetObj != null && carpetObj.GetComponent<PhotonView>().IsMine)
             {
                 carpIsMine = true; 
                 
-                Debug.Log("This is my carpet  " + carpIsMine);
+                //Debug.Log("This is my carpet  " + carpIsMine);
             }
             else
             {
                 carpIsMine = false;
                 
-                Debug.Log("This is my carpet" + carpIsMine);
-            }*/
+                //Debug.Log("This is my carpet" + carpIsMine);
+            }
         }
     }
 
@@ -166,7 +166,7 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
             {
                 TransferOwner();
             }*/
-
+            if(!carpIsMine)
             TransferOwner();
         }
     }
@@ -183,7 +183,6 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
                 carpetObj.transform.GetChild(1).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                 string shirtColor = PlayerPrefs.GetString(GlobalSettings.colorPrefKey);
                 carpetObj.GetComponent<pplOnCar>().ChangeCarColour(shirtColor);
-
                 //carpIsMine = true;
             }
             else
