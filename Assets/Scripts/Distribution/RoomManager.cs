@@ -54,8 +54,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
     /* GUI Functions */
     public void InitializeGUI()
     {
-        userRecorder = UserManager.localUserInstance.GetComponent<Recorder>();
-        muteToggle.isOn = !userRecorder.TransmitEnabled;
+        //userRecorder = UserManager.localUserInstance.GetComponent<Recorder>();
+        //muteToggle.isOn = !userRecorder.TransmitEnabled;
         microphoneDropdown.ClearOptions();
 
         availableMicrophones = Microphone.devices;
@@ -70,13 +70,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public void OnMuteMicrophoneToggle(bool isChecked)
     {
-        userRecorder.TransmitEnabled = !isChecked;
+        //userRecorder.TransmitEnabled = !isChecked;
     }
 
     public void OnMicrophoneDropdownChanged(int selectedItem)
     {
-        userRecorder.UnityMicrophoneDevice = availableMicrophones[selectedItem];
-        userRecorder.RestartRecording();
+        //userRecorder.UnityMicrophoneDevice = availableMicrophones[selectedItem];
+        //userRecorder.RestartRecording();
     }
 
     public void LeaveRoom()

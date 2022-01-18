@@ -6,7 +6,7 @@ using Photon.Realtime;
 public class TechniqueSwitch : MonoBehaviourPunCallbacks
 {
     public bool withNavigator = false;
-    private bool check = false;
+    public bool check = false;
     // Start is called before the first frame update
     void Start()
     {

@@ -122,7 +122,7 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
                 }
             }
 
-            if (carpetObj != null && carpetObj.GetComponent<PhotonView>().IsMine)
+            /*if (carpetObj != null && carpetObj.GetComponent<PhotonView>().IsMine)
             {
                 carpIsMine = true; 
                 
@@ -133,7 +133,7 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
                 carpIsMine = false;
                 
                 Debug.Log("This is my carpet" + carpIsMine);
-            }
+            }*/
         }
     }
 
@@ -162,10 +162,12 @@ public class CarpetNavOwnerTransf : MonoBehaviourPunCallbacks
          if(collision.gameObject.name == "ComicHandRight(Clone)")
         {   
             otherHand = collision.gameObject;
-            if (this.transform.parent.transform.position.y > minHandHeight)
+            /*if (this.transform.parent.transform.position.y > minHandHeight)
             {
                 TransferOwner();
-            }
+            }*/
+
+            TransferOwner();
         }
     }
 
