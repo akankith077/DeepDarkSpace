@@ -56,6 +56,11 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         {
             ButtonCheck();
 
+            if (carpetObj != null)
+            {
+                carpetOwnershipCheck();
+            }
+
             if (teleButtonCheck && carpetObj != null)
             {
                 if (!navigatorMode)
@@ -98,7 +103,17 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
             if (groupTeleportationConfirm.GetStateDown(handType) && carpetObj != null)
             {
-                GroupTeleportation();
+                if (!navigatorMode)
+                {
+                    GroupTeleportation();
+                }
+                else
+                {
+                    if (carpetObj.GetComponent<PhotonView>().IsMine)
+                    {
+                        GroupTeleportation();
+                    }
+                }
             }
             if (carpetObj != null)
             {
@@ -166,6 +181,13 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             index = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList.Count - 1;
             carpetObj = null;
             onCarpet = false;
+        }
+        if (collision.gameObject.name == "ComicHandRight(Clone)")
+        {
+            if (carpetObj != null && !carpIsMine && navigatorMode)
+            {
+                TransferOwner();
+            }
         }
     }
 
