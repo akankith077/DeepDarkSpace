@@ -740,8 +740,6 @@ GameObject:
   - component: {fileID: 4112092181272856657}
   - component: {fileID: -8772518501464423015}
   - component: {fileID: 2740626203623088966}
-  - component: {fileID: 2673570067550312554}
-  - component: {fileID: 6372367863092789057}
   - component: {fileID: 1931082550454580097}
   m_Layer: 2
   m_Name: ComicHandRight
@@ -1014,59 +1012,8 @@ MonoBehaviour:
   onCarpet: 0
   grouped: 0
   backToCarCheck: 0
---- !u!114 &2673570067550312554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4112092181272856654}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db4d322a3a665334cbed1016d77dd5b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handType: 2
-  groupTeleportationActive:
-    actionPath: /actions/default/in/TeleActive
-    needsReinit: 0
-  groupTeleportationConfirm:
-    actionPath: /actions/default/in/TeleConfirm
-    needsReinit: 0
-  backToCar:
-    actionPath: /actions/default/in/backToCar
-    needsReinit: 0
-  groupCancel:
-    actionPath: 
-    needsReinit: 0
-  platformObj: {fileID: 0}
-  hmdObj: {fileID: 0}
-  carpetObj: {fileID: 0}
-  oldCarpet: {fileID: 0}
-  teleportIndicator: {fileID: 0}
-  nextPos: {x: 0, y: 0, z: 0}
-  passengers: 
-  carpetPosList: []
-  index: 0
-  minHandHeight: 1.1
-  onCarpet: 0
-  grouped: 0
-  backToCarCheck: 0
+  navigatorMode: 0
   carpIsMine: 0
---- !u!114 &6372367863092789057
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4112092181272856654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 456bc7ce0c8814942919a35642991bc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  withNavigator: 0
-  check: 0
 --- !u!114 &1931082550454580097
 MonoBehaviour:
   m_ObjectHideFlags: 0
