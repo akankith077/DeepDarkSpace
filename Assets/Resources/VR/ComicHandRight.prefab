@@ -1009,6 +1009,7 @@ MonoBehaviour:
   passengers: 
   carpetPosList: []
   index: 0
+  highFiveHeight: 1.2
   onCarpet: 0
   grouped: 0
   backToCarCheck: 0
@@ -1029,6 +1030,8 @@ MonoBehaviour:
   maxRayLength: 100
   rayRadius: 0.02
   myID: 0
+  carpetResize: 0.2
+  carpetMaxSize: 3.2
   rayCastLayers:
     serializedVersion: 2
     m_Bits: 307

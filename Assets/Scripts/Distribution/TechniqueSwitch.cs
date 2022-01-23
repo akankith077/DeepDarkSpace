@@ -37,9 +37,8 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
     {   
          if (photonView.IsMine)
         {
-        //GameObject Hand = GameObject.Find("/ViewingSetup/Platform/ControllerRight/ComicHandRight(Clone)");
-        GetComponent<CarpetNav>().enabled = !check;
-        GetComponent<CarpetNavOwnerTransf>().enabled = check;
+        GameObject Hand = GameObject.Find("/ViewingSetup/Platform/ControllerRight/ComicHandRight(Clone)");
+        Hand.GetComponent<CarpetNav>().navigatorMode = check;
         Debug.Log("RPC Recieved to " + GetComponent<PhotonView>().OwnerActorNr);
         }
     }

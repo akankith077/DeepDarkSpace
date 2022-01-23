@@ -15,6 +15,8 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
     public float maxRayLength = 100.0f;
     public float rayRadius = 0.05f;
     public float myID = 0;
+    public float carpetResize = 0.2f;
+    public float carpetMaxSize = 3.2f;
     public LayerMask rayCastLayers;
 
     public SteamVR_Action_Boolean rayActivationAction;
@@ -138,9 +140,9 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
             {
                 float carpetSize = Vector3.Distance(new Vector3(carpet.transform.position.x, 0, carpet.transform.position.z), new Vector3(currentHit.point.x, 0, currentHit.point.z));
                 //Debug.Log("Carpet size" + carpetSize);
-                if (carpetSize > 3)
+                if (carpetSize > carpetMaxSize)
                 {
-                    carpetSize = 3;
+                    carpetSize = carpetMaxSize;
                 }
                 carpet.transform.localScale = new Vector3(carpetSize, 1.0f, carpetSize);
                 //carpet.GetComponent<BoxCollider>().size = new Vector3(carpetSize, 2.0f, carpetSize);
@@ -166,11 +168,11 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
             if (resize)
             {
                 float carpetSize = Vector3.Distance(new Vector3(hitObjPoint.x, 0, hitObjPoint.z), new Vector3(currentHit.point.x, 0, currentHit.point.z));
-                if (carpetSize > 3)
+                if (carpetSize > carpetMaxSize)
                 {
-                    carpetSize = 3;
+                    carpetSize = carpetMaxSize;
                 }
-                hitObj.transform.localScale = new Vector3(carpetSize, 1.0f, carpetSize);
+                hitObj.transform.localScale = new Vector3(carpetSize + carpetResize, 1.0f, carpetSize+ carpetResize);
             }
 
             if (rayDraggingAction.GetStateUp(handType))

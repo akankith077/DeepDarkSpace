@@ -21,6 +21,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public GameObject oldCarpet;
     public GameObject teleportIndicator;
     private GameObject leftHand;
+    private GameObject leftWristBand;
+    private GameObject rightWristBand;
     public Vector3 nextPos;
 
     public List<int> passengers = new List<int>();
@@ -29,6 +31,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public int index = 0;
     private float myID = 0;
     private float otherID = 0;
+    public float highFiveHeight = 1.2f;
 
     private bool teleButtonCheck = false;
     public bool onCarpet = false;
@@ -46,6 +49,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
             myID = transform.GetComponent<PhotonView>().OwnerActorNr;
             leftHand = GameObject.Find("/ViewingSetup/Platform/ControllerLeft/ComicHandLeft(Clone)");
+            leftWristBand = this.transform.GetChild(2).gameObject;
+            rightWristBand = leftHand.transform.GetChild(2).gameObject;
         }
     }
 
@@ -117,29 +122,22 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             }
             if (carpetObj != null)
             {
-                this.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = true;
-                leftHand.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = true;
+                rightWristBand.GetComponent<MeshRenderer>().enabled = true;
+                leftWristBand.GetComponent<MeshRenderer>().enabled = true;
                 passengers = carpetObj.GetComponent<pplOnCar>().carpetList;
                 passengerIDs = passengers.ToArray();
 
             }
-            else
+            /*else
             {
-                this.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = false;
+                rightWristBand.GetComponent<MeshRenderer>().enabled = false;
+                leftWristBand.GetComponent<MeshRenderer>().enabled = false;
+            }*/
 
-                leftHand.transform.GetChild(2).GetComponent<MeshRenderer>().enabled = false;
-            }
             if (onCarpet == false && grouped == true && backToCarCheck == true)
             {
-                /*for (float i = 0; i <= 1; i++) //ANIMATION FOR GROUPED BUT OUTSIDE CARPET
-                { 
-                    GameObject wristBand = this.gameObject.transform.GetChild(2).gameObject;
-                    Vector3 anim = (wristBand.transform.localScale.x, i, 0.3f);
-                    wristBand.transform.localScale.y += 1;
-                }*/
-
-                carpetPosList = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList;
                 
+                carpetPosList = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList;
                 nextPos = carpetPosList[index];
                 teleportIndicator.transform.position = nextPos;
                 teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
@@ -168,10 +166,13 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     {
         if (collision.gameObject.name == "carpet(Clone)")
         {
-            carpetObj = collision.gameObject;
-            oldCarpet = carpetObj;
-            grouped = true;
-            onCarpet = true;
+            if (collision.gameObject.transform.localScale.x > 0.1)
+            {
+                carpetObj = collision.gameObject;
+                oldCarpet = carpetObj;
+                grouped = true;
+                onCarpet = true;
+            }
         }
     }
     private void OnCollisionExit(Collision collision) //*************** When user enters the carpet
@@ -185,7 +186,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (collision.gameObject.name == "ComicHandRight(Clone)")
         {
             if (carpetObj != null && !carpIsMine && navigatorMode)
-            {
+            {   
+                if(collision.gameObject.transform.position.y > highFiveHeight)
                 TransferOwner();
             }
         }
@@ -283,12 +285,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 carpetObj.transform.GetChild(1).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                 string shirtColor = PlayerPrefs.GetString(GlobalSettings.colorPrefKey);
                 carpetObj.GetComponent<pplOnCar>().ChangeCarColour(shirtColor);
-                //carpIsMine = true;
-            }
-            else
-            {
-                Debug.Log("OWNERSHIP  TRANSFERED");
-                //carpIsMine = false;
             }
         }
     }
@@ -330,5 +326,16 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
         teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = check;
         teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(check);
+    }
+
+    [PunRPC]
+    void SwitchingTechnique(bool check)
+    {
+        if (photonView.IsMine)
+        {
+            //GameObject Hand = GameObject.Find("/ViewingSetup/Platform/ControllerRight/ComicHandRight(Clone)");
+            GetComponent<CarpetNav>().navigatorMode = check;
+            Debug.Log("RPC Recieved to " + GetComponent<PhotonView>().OwnerActorNr);
+        }
     }
 }
