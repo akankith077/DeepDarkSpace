@@ -183,6 +183,8 @@ MonoBehaviour:
   maxRayLength: 100
   rayRadius: 0.025
   myID: 0
+  carpetResize: 0.2
+  carpetMaxSize: 0.2
   rayCastLayers:
     serializedVersion: 2
     m_Bits: 4294967295
