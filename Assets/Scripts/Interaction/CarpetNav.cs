@@ -34,6 +34,11 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     private float otherID = 0;
     public float highFiveHeight = 1.1f;
 
+    public SteamVR_Action_Boolean scaling;
+    private GameObject ViewPort;
+    private Vector3 smallScale = new Vector3(0.5f, 0.5f, 0.5f);
+    private Vector3 normalScale = new Vector3(1f, 1f, 1f);
+
     private bool teleButtonCheck = false;
     public bool onCarpet = false;
     public bool grouped = false;
@@ -46,6 +51,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             platformObj = GameObject.Find("/ViewingSetup/Platform");
+            ViewPort = GameObject.Find("/ViewingSetup");
             hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
             teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
             myID = transform.GetComponent<PhotonView>().OwnerActorNr;
@@ -120,6 +126,17 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                     }
                 }
             }
+
+            if (scaling.GetStateDown(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
+            {
+                Debug.Log("Trying to scale");
+                ScalingChange(true);
+            }
+            else if (scaling.GetStateUp(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
+            {
+                ScalingChange(false);
+            }
+
             if (carpetObj != null)
             {
                 rightWristBand.GetComponent<MeshRenderer>().enabled = true;
@@ -217,7 +234,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     }
 
 
-
     public void GroupTeleDeactivate()
     {
         carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
@@ -260,6 +276,21 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             //Debug.Log("This is my carpet" + carpIsMine);
         }
     }
+    public void ScalingChange(bool scaleCheck)
+    {
+
+        Debug.Log("Scaled");
+        ViewPort.transform.localScale = smallScale;
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            if (passengerIDs[i] != myID)
+            {
+                photonView.RPC("RemoteScaling", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), scaleCheck);
+            }
+        }
+
+    }
+
 
     public void ButtonCheck()
     {
@@ -347,6 +378,23 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             //GameObject Hand = GameObject.Find("/ViewingSetup/Platform/ControllerRight/ComicHandRight(Clone)");
             GetComponent<CarpetNav>().navigatorMode = check;
             Debug.Log("RPC Recieved to " + GetComponent<PhotonView>().OwnerActorNr);
+        }
+    }
+
+    [PunRPC]
+    void RemoteScaling(bool check)
+    {
+        if (photonView.IsMine)
+        {
+            ViewPort = GameObject.Find("/ViewingSetup");
+            if (check)
+            {
+                ViewPort.transform.localScale = smallScale;
+            }
+            else
+            {
+                ViewPort.transform.localScale = normalScale;
+            }
         }
     }
 }
