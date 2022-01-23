@@ -271,7 +271,7 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
-  m_Animate: 1
+  m_Animate: 0
   m_UseWorldTransform: 1
 --- !u!114 &7663391141951778333
 MonoBehaviour:

@@ -7,14 +7,6 @@ public class TechniqueSwitch : MonoBehaviourPunCallbacks
 {
     public bool withNavigator = false;
     public bool check = false;
-    // Start is called before the first frame update
-    void Start()
-    {
-        GetComponent<CarpetNav>().enabled = true;
-        GetComponent<CarpetNavOwnerTransf>().enabled = false;
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if (photonView.IsMine)
