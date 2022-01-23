@@ -345,7 +345,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
         teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
 
-        ViewPort.transform.localScale = smallScale;
         Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
         Vector3 translateVector = groundPosition - carpet;
         teleportIndicator.transform.position = carpetChild + translateVector;
