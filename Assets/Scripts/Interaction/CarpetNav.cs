@@ -280,7 +280,14 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     {
 
         Debug.Log("Scaled");
-        ViewPort.transform.localScale = smallScale;
+        if (scaleCheck)
+        {
+            ViewPort.transform.localScale = smallScale;
+        }
+        else
+        {
+            ViewPort.transform.localScale = normalScale;
+        }
         for (int i = 0; i < passengerIDs.Length; i++)
         {
             if (passengerIDs[i] != myID)
@@ -390,6 +397,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             if (check)
             {
                 ViewPort.transform.localScale = smallScale;
+                Debug.Log("smallScale Size is : " + ViewPort.transform.localScale.x);
             }
             else
             {
