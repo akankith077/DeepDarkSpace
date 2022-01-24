@@ -1534,6 +1534,7 @@ MonoBehaviour:
   carpetObj: {fileID: 0}
   oldCarpet: {fileID: 0}
   teleportIndicator: {fileID: 0}
+  helmetObj: {fileID: 0}
   nextPos: {x: 0, y: 0, z: 0}
   passengers: 
   carpetPosList: []

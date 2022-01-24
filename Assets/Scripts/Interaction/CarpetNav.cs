@@ -20,6 +20,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public GameObject carpetObj = null;
     public GameObject oldCarpet;
     public GameObject teleportIndicator;
+    public GameObject helmetObj;
     private GameObject leftHand;
     private GameObject leftWristBand;
     private GameObject rightWristBand;
@@ -53,6 +54,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             platformObj = GameObject.Find("/ViewingSetup/Platform");
             ViewPort = GameObject.Find("/ViewingSetup");
             hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
+            helmetObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera/Robot/CameraTranslateOnly/RobotHead/Helmet");
             teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
             myID = transform.GetComponent<PhotonView>().OwnerActorNr;
             leftHand = GameObject.Find("/ViewingSetup/Platform/ControllerLeft/ComicHandLeft(Clone)");
@@ -268,13 +270,23 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (carpetObj != null && carpetObj.GetComponent<PhotonView>().IsMine)
         {
             carpIsMine = true;
-
+            if (navigatorMode)
+            {
+                helmetObj.GetComponent<MeshRenderer>().enabled = true;
+            }
+            else
+            {
+                helmetObj.GetComponent<MeshRenderer>().enabled = false;
+            }
             //Debug.Log("This is my carpet  " + carpIsMine);
         }
         else
         {
             carpIsMine = false;
-
+            if (navigatorMode)
+            {
+                helmetObj.GetComponent<MeshRenderer>().enabled = false;
+            }
             //Debug.Log("This is my carpet" + carpIsMine);
         }
     }
