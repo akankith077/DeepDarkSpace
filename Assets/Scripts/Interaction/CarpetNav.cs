@@ -24,9 +24,9 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     private GameObject leftHand;
     private GameObject leftWristBand;
     private GameObject rightWristBand;
+    private GameObject navTag;
     public Vector3 nextPos;
     private Vector3 edgeCorrection = new Vector3(1f, 0f, 1f);
-
     public List<int> passengers = new List<int>();
     public List<Vector3> carpetPosList = new List<Vector3>();
     private int[] passengerIDs = { };
@@ -47,6 +47,9 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public bool navigatorMode = false;
     public bool carpIsMine = false;
 
+    public Material gold;
+    public Material old;
+
     void Start()
     {
         if (photonView.IsMine)
@@ -60,6 +63,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             leftHand = GameObject.Find("/ViewingSetup/Platform/ControllerLeft/ComicHandLeft(Clone)");
             leftWristBand = this.transform.GetChild(2).gameObject;
             rightWristBand = leftHand.transform.GetChild(2).gameObject;
+            navTag = this.transform.GetChild(4).gameObject;
         }
     }
 
@@ -92,6 +96,14 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                         GroupTeleActive();
                     }
                 }
+            }
+            if (navigatorMode)
+            {
+                navTag.GetComponent<Canvas>().enabled = true;
+            }
+            else
+            {
+                navTag.GetComponent<Canvas>().enabled = false;
             }
             if (groupTeleportationActive.GetStateUp(handType) && carpetObj != null)
             {
@@ -273,10 +285,14 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             if (navigatorMode)
             {
                 helmetObj.GetComponent<MeshRenderer>().enabled = true;
+                rightWristBand.GetComponent<Renderer>().material = gold;
+                leftWristBand.GetComponent<Renderer>().material = gold;
             }
             else
             {
                 helmetObj.GetComponent<MeshRenderer>().enabled = false;
+                rightWristBand.GetComponent<Renderer>().material = old;
+                leftWristBand.GetComponent<Renderer>().material = old;
             }
             //Debug.Log("This is my carpet  " + carpIsMine);
         }
