@@ -221,6 +221,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     {
         Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
         Vector3 translateVector = groundPosition - carpetObj.transform.position;
+        translateVector.y = 0f;
         carpetObj.transform.GetChild(0).position = teleportIndicator.transform.position - translateVector;
         carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
         //carpetObj.gameObject.transform.SetParent(platformObj.transform); 
@@ -250,6 +251,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     {
         Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
         Vector3 translateVector = teleportIndicator.transform.position - groundPosition;
+        translateVector.y = 0f;
         carpetObj.transform.position += translateVector;
 
         for (int i = 0; i < passengerIDs.Length; i++)
@@ -282,17 +284,30 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         Debug.Log("Scaled");
         if (scaleCheck)
         {
+            platformObj.transform.SetParent(null);
+            carpetObj.transform.SetParent(null);
+            carpetObj.transform.localScale = new Vector3(carpetObj.transform.localScale.x / 1.8f, carpetObj.transform.localScale.y, carpetObj.transform.localScale.z / 1.8f);
+            ViewPort.transform.position = new Vector3(carpetObj.transform.position.x, ViewPort.transform.position.y, carpetObj.transform.position.z);
+            platformObj.transform.SetParent(ViewPort.transform, true);
             ViewPort.transform.localScale = smallScale;
+            carpetObj.transform.SetParent(ViewPort.transform, true);
+
         }
         else
         {
+            platformObj.transform.SetParent(null);
+            carpetObj.transform.SetParent(null);
+            ViewPort.transform.position = new Vector3(carpetObj.transform.position.x, ViewPort.transform.position.y, carpetObj.transform.position.z);
+            carpetObj.transform.localScale = new Vector3(carpetObj.transform.localScale.x * 1.8f, carpetObj.transform.localScale.y, carpetObj.transform.localScale.z * 1.8f);
+            platformObj.transform.SetParent(ViewPort.transform, true);
             ViewPort.transform.localScale = normalScale;
+            carpetObj.transform.SetParent(ViewPort.transform, true);
         }
         for (int i = 0; i < passengerIDs.Length; i++)
         {
             if (passengerIDs[i] != myID)
             {
-                photonView.RPC("RemoteScaling", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), scaleCheck);
+                photonView.RPC("RemoteScaling", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), scaleCheck, carpetObj.transform.position);
             }
         }
 
@@ -380,23 +395,29 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     [PunRPC]
     void SwitchingTechnique(bool check)
     {
-            //GameObject Hand = GameObject.Find("/ViewingSetup/Platform/ControllerRight/ComicHandRight(Clone)");
-            GetComponent<CarpetNav>().navigatorMode = check;
-            Debug.Log("RPC Recieved to " + GetComponent<PhotonView>().OwnerActorNr);
+        //GameObject Hand = GameObject.Find("/ViewingSetup/Platform/ControllerRight/ComicHandRight(Clone)");
+        GetComponent<CarpetNav>().navigatorMode = check;
+        Debug.Log("RPC Recieved to " + GetComponent<PhotonView>().OwnerActorNr);
     }
 
     [PunRPC]
-    void RemoteScaling(bool check)
+    void RemoteScaling(bool check, Vector3 carpetPos)
     {
-            ViewPort = GameObject.Find("/ViewingSetup");
-            if (check)
-            {
-                ViewPort.transform.localScale = smallScale;
-                Debug.Log("smallScale Size is : " + ViewPort.transform.localScale.x);
-            }
-            else
-            {
-                ViewPort.transform.localScale = normalScale;
-            }
+        ViewPort = GameObject.Find("/ViewingSetup");
+        platformObj = GameObject.Find("/ViewingSetup/Platform");
+        if (check)
+        {
+            platformObj.transform.SetParent(null);
+            ViewPort.transform.position = new Vector3(carpetPos.x, ViewPort.transform.position.y, carpetPos.z);
+            platformObj.transform.SetParent(ViewPort.transform, true);
+            ViewPort.transform.localScale = smallScale;
+        }
+        else
+        {
+            platformObj.transform.SetParent(null);
+            ViewPort.transform.position = new Vector3(carpetPos.x, ViewPort.transform.position.y, carpetPos.z);
+            platformObj.transform.SetParent(ViewPort.transform, true);
+            ViewPort.transform.localScale = normalScale;
+        }
     }
 }
