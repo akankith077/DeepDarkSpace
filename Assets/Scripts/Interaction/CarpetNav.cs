@@ -129,7 +129,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
             if (scaling.GetStateDown(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
             {
-                Debug.Log("Trying to scale");
                 ScalingChange(true);
             }
             else if (scaling.GetStateUp(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
@@ -211,6 +210,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         {
             if (carpetObj != null && !carpIsMine && navigatorMode)
             {
+                Debug.Log("Collided With other hand at height : " + collision.gameObject.transform.position.y);
                 if (collision.gameObject.transform.position.y > highFiveHeight)
                     TransferOwner();
             }
@@ -362,6 +362,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
         Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
         Vector3 translateVector = groundPosition - carpet;
+        translateVector.y = 0f;
         teleportIndicator.transform.position = carpetChild + translateVector;
 
         teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
@@ -379,6 +380,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
 
         Vector3 translateVector = teleportIndicator.transform.position - groundPosition;
+        translateVector.y = 0f;
 
         platformObj.transform.position += translateVector;
     }
