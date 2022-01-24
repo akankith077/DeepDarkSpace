@@ -100,10 +100,41 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             if (navigatorMode)
             {
                 navTag.GetComponent<Canvas>().enabled = true;
+
+                if (carpIsMine)
+                {
+                    if (scaling.GetStateDown(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
+                    {
+                        ScalingChange(true);
+                    }
+                    else if (scaling.GetStateUp(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
+                    {
+                        ScalingChange(false);
+                    }
+                }
             }
             else
             {
                 navTag.GetComponent<Canvas>().enabled = false;
+
+                if (scaling.GetStateDown(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
+                {
+                    if (carpIsMine)
+                    {
+                        carpetObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                        carpetObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                    }
+                    ScalingChange(true);
+                }
+                else if (scaling.GetStateUp(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
+                {
+                    ScalingChange(false);
+                    if (carpetObj.GetComponent<PhotonView>().CreatorActorNr != myID)
+                    {
+                        carpetObj.GetComponent<PhotonView>().TransferOwnership(carpetObj.GetComponent<PhotonView>().CreatorActorNr);
+                        carpetObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(carpetObj.GetComponent<PhotonView>().CreatorActorNr);
+                    }
+                }
             }
             if (groupTeleportationActive.GetStateUp(handType) && carpetObj != null)
             {
@@ -140,15 +171,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                     }
                 }
             }
-
-            if (scaling.GetStateDown(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
-            {
-                ScalingChange(true);
-            }
-            else if (scaling.GetStateUp(SteamVR_Input_Sources.LeftHand) && onCarpet && grouped)
-            {
-                ScalingChange(false);
-            }
+            
 
             if (carpetObj != null)
             {
