@@ -14,6 +14,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public SteamVR_Action_Boolean groupTeleportationConfirm;
     public SteamVR_Action_Boolean backToCar;
     public SteamVR_Action_Boolean groupCancel;
+    public SteamVR_Action_Boolean navigatorToggle;
 
     public GameObject platformObj;
     public GameObject hmdObj;
@@ -25,6 +26,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     private GameObject leftWristBand;
     private GameObject rightWristBand;
     private GameObject navTag;
+    public GameObject NavigatorActivationBox;
+
     public Vector3 nextPos;
     private Vector3 edgeCorrection = new Vector3(1f, 0f, 1f);
     public List<int> passengers = new List<int>();
@@ -64,6 +67,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             leftWristBand = this.transform.GetChild(2).gameObject;
             rightWristBand = leftHand.transform.GetChild(2).gameObject;
             navTag = this.transform.GetChild(4).gameObject;
+            NavigatorActivationBox = GameObject.Find("AAA");
         }
     }
 
@@ -71,8 +75,9 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     void Update()
     {
         if (photonView.IsMine)
-        {
+        {   
             ButtonCheck();
+            NavigatorModeCheck();
             if (carpetObj != null)
             {
                 carpetOwnershipCheck();
@@ -387,6 +392,32 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         {
             grouped = false;
         }
+        if (navigatorToggle.GetStateDown(SteamVR_Input_Sources.RightHand))
+        {
+            if (navigatorMode)
+            {
+                navigatorMode = false;
+                NavigatorActivationBox.GetComponent<MeshRenderer>().enabled = false;
+            }
+            else
+            {
+                navigatorMode = true;
+                NavigatorActivationBox.GetComponent<MeshRenderer>().enabled = true;
+            }
+        }
+    }
+
+    public void NavigatorModeCheck()
+    {
+        bool navCheck = NavigatorActivationBox.GetComponent<MeshRenderer>().enabled;
+        if (navCheck)
+        {
+            navigatorMode = true;
+        }
+        else
+        {
+            navigatorMode = false;
+        }
     }
 
     public void TransferOwner()
@@ -415,6 +446,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         Vector3 translateVector = groundPosition - carpet;
         translateVector.y = 0f;
         teleportIndicator.transform.position = carpetChild + translateVector;
+        Vector3 IndicatorRotation = new Vector3(0, hmdObj.transform.eulerAngles.y - hmdObj.transform.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
+        teleportIndicator.transform.rotation = Quaternion.Euler(IndicatorRotation);
 
         teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
         teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(true);

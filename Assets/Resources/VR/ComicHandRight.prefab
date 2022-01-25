@@ -1745,12 +1745,16 @@ MonoBehaviour:
   groupCancel:
     actionPath: /actions/default/in/backToCar
     needsReinit: 0
+  navigatorToggle:
+    actionPath: /actions/default/in/TimerAction
+    needsReinit: 0
   platformObj: {fileID: 0}
   hmdObj: {fileID: 0}
   carpetObj: {fileID: 0}
   oldCarpet: {fileID: 0}
   teleportIndicator: {fileID: 0}
   helmetObj: {fileID: 0}
+  NavigatorActivationBox: {fileID: 0}
   nextPos: {x: 0, y: 0, z: 0}
   passengers: 
   carpetPosList: []
