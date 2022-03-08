@@ -8,6 +8,9 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
 {
 
     private Vector3 endpoint;
+    private Vector3 midpoint;
+    private Vector3 headSetMidpoint;
+    private Vector3 controllerMidpoint;
     private Transform teleTranform;
     private Vector3[] controlPoints;
     public LineRenderer curvedLine;
@@ -15,6 +18,8 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
     private float extensionFactor;
     private int segmnetCount = 40;
     private GameObject controllerObject;
+    private GameObject controllerObjectRight;
+    private GameObject controllerObjectLeft;
     private GameObject cameraObject;
     private Transform controllerTrans;
     private Transform networkControllerTrans;
@@ -26,8 +31,11 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
         controlPoints = new Vector3[3];
         curvedLine.enabled = false;
         extendStep = 10f;
-        controllerObject = GameObject.Find("/ViewingSetup/Platform/ControllerLeft");
+        controllerObjectLeft = GameObject.Find("/ViewingSetup/Platform/ControllerLeft");
+        controllerObjectRight = GameObject.Find("/ViewingSetup/Platform/ControllerRight");
         cameraObject = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
+        controllerObject = controllerObjectLeft;
+        midpoint = headSetMidpoint;
     }
 
     void Update()
@@ -35,12 +43,9 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView.IsMine)
         {
             controllerTrans = controllerObject.transform;
+            headSetMidpoint = cameraObject.transform.position + (cameraObject.transform.forward * extendStep * 2f / 5f) + new Vector3(0.0f, 1.0f, 0.0f);
+            controllerMidpoint = controllerTrans.transform.position + (controllerTrans.transform.forward * extendStep * 2f / 5f);
             UpdateControlPoints(controllerTrans);
-        }
-        else
-        {
-            //networkControllerTrans = transform.parent.gameObject.transform;
-            //UpdateControlPoints(networkControllerTrans);
         }
         HandleExtention();
         DrawCurvedLine();
@@ -52,6 +57,15 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
     public void GetDrawLine(bool draw)
     {
         drawLine = draw;
+        controllerObject = controllerObjectLeft;
+        midpoint = headSetMidpoint;
+    }
+
+    public void GetDrawRightLine(bool draw)
+    {
+        drawLine = draw;
+        controllerObject = controllerObjectRight;
+        midpoint = controllerMidpoint;
     }
 
     public void DrawLine(bool drawline)
@@ -71,8 +85,9 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
     void UpdateControlPoints(Transform cntrlTrans)
     {
         controlPoints[0] = cntrlTrans.position; //Contoller position
-        controlPoints[1] = cameraObject.transform.position + (cameraObject.transform.forward * extendStep * 2f / 5f) + new Vector3 (0.0f, 1.0f, 0.0f); //middle point
-        
+        controlPoints[1] = midpoint;//middle point
+
+
     }
     void DrawCurvedLine()
     {
@@ -83,7 +98,7 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
 
         Vector3 prevPosition = controlPoints[0];
         Vector3 nextPosition = prevPosition;
-        for (int i = 1; i <= segmnetCount; i++)
+        for (int i = 1; i < segmnetCount; i++)
         {
             float t = i / (float)segmnetCount;
             curvedLine.positionCount = i + 1;
@@ -104,14 +119,12 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
             if (CheckCollider(prevPosition, nextPosition))
             {
                 curvedLine.SetPosition(i, endpoint);
-                //endPointDetected = true;
                 return;
             }
 
             else
             {
                 curvedLine.SetPosition(i, nextPosition);
-                //endPointDetected = false;
                 prevPosition = nextPosition;
             }
         }
@@ -144,7 +157,7 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (stream.IsWriting)
         {
-            /*bool drawCheck = drawLine;
+            /*bool drawCheck = drawLine; //uncomment to make like distributed
             stream.SendNext(drawCheck);
             stream.SendNext(controlPoints[0]);
             stream.SendNext(controlPoints[1]);

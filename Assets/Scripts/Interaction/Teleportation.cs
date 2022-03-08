@@ -10,12 +10,14 @@ using Valve.VR;
 public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
 {
     public BezierCurve bezier;
-    //private CurvedRay curvRAY;
+    public CarpetNav carpetNav;
+
     private bool teleportEnabled;
     private bool timeCheckBool = false;
     private float activityTime = 0.0f;
 
     public SteamVR_Input_Sources handType;
+    public SteamVR_Input_Sources handType2;
     public SteamVR_Action_Boolean teleportAction;
     public SteamVR_Action_Boolean teleportConfirmAction;
     public SteamVR_Action_Boolean snapLeftAction;
@@ -42,14 +44,7 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
             teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
             teleportIndicator.GetComponent<MeshRenderer>().enabled = false;
             teleportEnabled = false;
-            if (this.gameObject.name == "Bezier left")
-            {
-                controllerObject = GameObject.Find("/ViewingSetup/Platform/ControllerLeft");
-            }
-            else
-            {
-                controllerObject = GameObject.Find("/ViewingSetup/Platform/ControllerRight");
-            }
+            controllerObject = GameObject.Find("/ViewingSetup/Platform/ControllerRight");
 
             platformObject = controllerObject.gameObject.transform.parent.gameObject;
             rotateObject = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
@@ -71,11 +66,21 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
                 teleportEnabled = false;
                 ToggleTeleportMode(teleportEnabled);
             }
-
-            if (teleportEnabled)
+            if(this.gameObject.name == "Bezier")
             {
-                HandleTeleport();
-                ToggleTeleportMode(teleportEnabled);
+                if (teleportEnabled && !carpetNav.joystickButtonActive && !carpetNav.onCarpet)
+                {
+                    HandleTeleport();
+                    ToggleTeleportMode(teleportEnabled);
+                }
+            }
+            else
+            {
+                if (teleportEnabled)
+                {
+                    HandleTeleport();
+                    ToggleTeleportMode(teleportEnabled);
+                }
             }
 
             bezierCheck = bezier.endPointDetected;
@@ -112,12 +117,12 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
         if (bezierCheck)
         {
             teleportIndicator.transform.position = bezier.EndPoint; //Sets teleport indicator position
-            Vector3 IndicatorRotation = new Vector3(0, rotateObject.transform.eulerAngles.y - rotateObject.transform.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
+            Vector3 IndicatorRotation = new Vector3(0, controllerObject.transform.eulerAngles.y - controllerObject.transform.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
             teleportIndicator.transform.rotation = Quaternion.Euler(IndicatorRotation); //Set teleport indicator rotation mapped to controller rotation
             //teleportIndicator.transform.forward  = rotateObject.transform.forward; 
             teleportIndicator.GetComponent<MeshRenderer>().enabled = true;
 
-            if (teleportConfirmAction.GetStateDown(handType))
+            if (teleportConfirmAction.GetStateUp(handType))
             {
                 teleportIndicator.GetComponent<MeshRenderer>().enabled = false;
 
@@ -131,10 +136,10 @@ public class Teleportation : MonoBehaviourPunCallbacks, IPunObservable
                 Vector3 groundPosition = new Vector3(rotateObject.transform.position.x, platformObject.transform.position.y, rotateObject.transform.position.z);
 
                 Vector3 translateVector = bezier.EndPoint - groundPosition;
-                teleportIndicator.transform.position -= rotateObject.transform.forward; 
+                teleportIndicator.transform.position -= rotateObject.transform.forward;
                 platformObject.transform.position += translateVector;
 
-                //platformObject.transform.RotateAround(rotateObject.transform.position, Vector3.up, -ControllerRotation); //Sets the User rotaion as the indicator rotation
+                platformObject.transform.RotateAround(rotateObject.transform.position, Vector3.up, -ControllerRotation); //Sets the User rotaion as the indicator rotation
             }
         }
     }

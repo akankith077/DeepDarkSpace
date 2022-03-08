@@ -32,14 +32,7 @@ public class BezierCurve : MonoBehaviourPunCallbacks, IPunObservable
         controlPoints = new Vector3[3];
         curvedLine.enabled = false;
         extendStep = 20f;
-        if (this.gameObject.name == "Bezier left")
-        {
-            controllerObject = GameObject.Find("/ViewingSetup/Platform/ControllerLeft");
-        }
-        else
-        {
-            controllerObject = GameObject.Find("/ViewingSetup/Platform/ControllerRight");
-        }
+        controllerObject = GameObject.Find("/ViewingSetup/Platform/ControllerRight");
     }
 
     void Update()
@@ -63,10 +56,6 @@ public class BezierCurve : MonoBehaviourPunCallbacks, IPunObservable
     public void GetDrawLine(bool draw)
     {
         drawLine = draw;
-        /*if (draw)
-        {
-            Debug.Log("***Line draw recieved at " + GetComponent<PhotonView>().ViewID);
-        }*/
     }
 
     public void DrawLine(bool drawline)
@@ -89,17 +78,15 @@ public class BezierCurve : MonoBehaviourPunCallbacks, IPunObservable
         controlPoints[1] = controlPoints[0] + (cntrlTrans.transform.forward * extendStep * 2f / 5f); //middle point
         controlPoints[2] = controlPoints[0] + (cntrlTrans.transform.forward * extendStep * 3f / 5f) + Vector3.up * -12f; //final location
     }
-    
+
     void DrawCurvedLine()
     {
-        if (!curvedLine.enabled)
-            return;
         curvedLine.positionCount = 1;
         curvedLine.SetPosition(0, controlPoints[0]);
 
         Vector3 prevPosition = controlPoints[0];
         Vector3 nextPosition = prevPosition;
-        for (int i = 1; i <= segmnetCount; i++)
+        for (int i = 1; i < segmnetCount; i++)
         {
             float t = i / (float)segmnetCount;
             curvedLine.positionCount = i + 1;

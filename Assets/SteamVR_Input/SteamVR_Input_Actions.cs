@@ -37,6 +37,16 @@ namespace Valve.VR
         
         private static SteamVR_Action_Boolean p_default_backToCar;
         
+        private static SteamVR_Action_Boolean p_default_indiTeleActive;
+        
+        private static SteamVR_Action_Boolean p_default_indiTeleConfirm;
+        
+        private static SteamVR_Action_Boolean p_default_circleForm;
+        
+        private static SteamVR_Action_Boolean p_default_presentorForm;
+        
+        private static SteamVR_Action_Boolean p_default_semiCircForm;
+        
         private static SteamVR_Action_Vibration p_default_Haptic;
         
         public static SteamVR_Action_Pose default_Pose
@@ -119,6 +129,46 @@ namespace Valve.VR
             }
         }
         
+        public static SteamVR_Action_Boolean default_indiTeleActive
+        {
+            get
+            {
+                return SteamVR_Actions.p_default_indiTeleActive.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Boolean default_indiTeleConfirm
+        {
+            get
+            {
+                return SteamVR_Actions.p_default_indiTeleConfirm.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Boolean default_circleForm
+        {
+            get
+            {
+                return SteamVR_Actions.p_default_circleForm.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Boolean default_presentorForm
+        {
+            get
+            {
+                return SteamVR_Actions.p_default_presentorForm.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Boolean default_semiCircForm
+        {
+            get
+            {
+                return SteamVR_Actions.p_default_semiCircForm.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
         public static SteamVR_Action_Vibration default_Haptic
         {
             get
@@ -140,6 +190,11 @@ namespace Valve.VR
                     SteamVR_Actions.default_TeleActive,
                     SteamVR_Actions.default_TeleConfirm,
                     SteamVR_Actions.default_backToCar,
+                    SteamVR_Actions.default_indiTeleActive,
+                    SteamVR_Actions.default_indiTeleConfirm,
+                    SteamVR_Actions.default_circleForm,
+                    SteamVR_Actions.default_presentorForm,
+                    SteamVR_Actions.default_semiCircForm,
                     SteamVR_Actions.default_Haptic};
             Valve.VR.SteamVR_Input.actionsIn = new Valve.VR.ISteamVR_Action_In[] {
                     SteamVR_Actions.default_Pose,
@@ -151,7 +206,12 @@ namespace Valve.VR
                     SteamVR_Actions.default_TimerAction,
                     SteamVR_Actions.default_TeleActive,
                     SteamVR_Actions.default_TeleConfirm,
-                    SteamVR_Actions.default_backToCar};
+                    SteamVR_Actions.default_backToCar,
+                    SteamVR_Actions.default_indiTeleActive,
+                    SteamVR_Actions.default_indiTeleConfirm,
+                    SteamVR_Actions.default_circleForm,
+                    SteamVR_Actions.default_presentorForm,
+                    SteamVR_Actions.default_semiCircForm};
             Valve.VR.SteamVR_Input.actionsOut = new Valve.VR.ISteamVR_Action_Out[] {
                     SteamVR_Actions.default_Haptic};
             Valve.VR.SteamVR_Input.actionsVibration = new Valve.VR.SteamVR_Action_Vibration[] {
@@ -166,7 +226,12 @@ namespace Valve.VR
                     SteamVR_Actions.default_TimerAction,
                     SteamVR_Actions.default_TeleActive,
                     SteamVR_Actions.default_TeleConfirm,
-                    SteamVR_Actions.default_backToCar};
+                    SteamVR_Actions.default_backToCar,
+                    SteamVR_Actions.default_indiTeleActive,
+                    SteamVR_Actions.default_indiTeleConfirm,
+                    SteamVR_Actions.default_circleForm,
+                    SteamVR_Actions.default_presentorForm,
+                    SteamVR_Actions.default_semiCircForm};
             Valve.VR.SteamVR_Input.actionsSingle = new Valve.VR.SteamVR_Action_Single[] {
                     SteamVR_Actions.default_SteeringTrigger};
             Valve.VR.SteamVR_Input.actionsVector2 = new Valve.VR.SteamVR_Action_Vector2[0];
@@ -181,7 +246,12 @@ namespace Valve.VR
                     SteamVR_Actions.default_TimerAction,
                     SteamVR_Actions.default_TeleActive,
                     SteamVR_Actions.default_TeleConfirm,
-                    SteamVR_Actions.default_backToCar};
+                    SteamVR_Actions.default_backToCar,
+                    SteamVR_Actions.default_indiTeleActive,
+                    SteamVR_Actions.default_indiTeleConfirm,
+                    SteamVR_Actions.default_circleForm,
+                    SteamVR_Actions.default_presentorForm,
+                    SteamVR_Actions.default_semiCircForm};
         }
         
         private static void PreInitActions()
@@ -196,6 +266,11 @@ namespace Valve.VR
             SteamVR_Actions.p_default_TeleActive = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/TeleActive")));
             SteamVR_Actions.p_default_TeleConfirm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/TeleConfirm")));
             SteamVR_Actions.p_default_backToCar = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/backToCar")));
+            SteamVR_Actions.p_default_indiTeleActive = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/indiTeleActive")));
+            SteamVR_Actions.p_default_indiTeleConfirm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/indiTeleConfirm")));
+            SteamVR_Actions.p_default_circleForm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/circleForm")));
+            SteamVR_Actions.p_default_presentorForm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/presentorForm")));
+            SteamVR_Actions.p_default_semiCircForm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/semiCircForm")));
             SteamVR_Actions.p_default_Haptic = ((SteamVR_Action_Vibration)(SteamVR_Action.Create<SteamVR_Action_Vibration>("/actions/default/out/Haptic")));
         }
     }

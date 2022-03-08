@@ -97,6 +97,46 @@ namespace Valve.VR
             }
         }
         
+        public virtual SteamVR_Action_Boolean indiTeleActive
+        {
+            get
+            {
+                return SteamVR_Actions.default_indiTeleActive;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean indiTeleConfirm
+        {
+            get
+            {
+                return SteamVR_Actions.default_indiTeleConfirm;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean circleForm
+        {
+            get
+            {
+                return SteamVR_Actions.default_circleForm;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean presentorForm
+        {
+            get
+            {
+                return SteamVR_Actions.default_presentorForm;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean semiCircForm
+        {
+            get
+            {
+                return SteamVR_Actions.default_semiCircForm;
+            }
+        }
+        
         public virtual SteamVR_Action_Vibration Haptic
         {
             get

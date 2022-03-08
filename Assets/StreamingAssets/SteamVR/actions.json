@@ -41,6 +41,26 @@
       "type": "boolean"
     },
     {
+      "name": "/actions/default/in/indiTeleActive",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/default/in/indiTeleConfirm",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/default/in/circleForm",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/default/in/presentorForm",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/default/in/semiCircForm",
+      "type": "boolean"
+    },
+    {
       "name": "/actions/default/out/Haptic",
       "type": "vibration"
     }
