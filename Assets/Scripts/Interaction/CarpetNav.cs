@@ -277,55 +277,62 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     }
     public void OnCollisionEnter(Collision collision) //*************** When user enters the carpet
     {
-        if (collision.gameObject.name == "carpet(Clone)")
+        if (photonView.IsMine)
         {
-            backToCarObj.GetComponent<MeshRenderer>().material = invisible;
-            if (collision.gameObject.transform.localScale.x > 0.2)
+            if (collision.gameObject.name == "carpet(Clone)")
             {
-                carpetObj = collision.gameObject;
-                oldCarpet = carpetObj;
-                grouped = true;
-                onCarpet = true;
+
+                backToCarObj.GetComponent<MeshRenderer>().material = invisible;
+                if (collision.gameObject.transform.localScale.x > 0.2)
+                {
+                    carpetObj = collision.gameObject;
+                    oldCarpet = carpetObj;
+                    grouped = true;
+                    onCarpet = true;
+                }
             }
-        }
-        if (collision.gameObject.name == "Food")
-        {
-            locationObj = foodlocation;
-            locationObjFound = true;
-            arrowObj.transform.GetChild(0).transform.GetComponent<MeshRenderer>().enabled = true;
-        }
-        else if (collision.gameObject.name == "Fire")
-        {
-            locationObj = fireLocation;
-            locationObjFound = true;
-            arrowObj.transform.GetChild(0).transform.GetComponent<MeshRenderer>().enabled = true;
+            if (collision.gameObject.name == "Food")
+            {
+                locationObj = foodlocation;
+                locationObjFound = true;
+                arrowObj.transform.GetChild(0).transform.GetComponent<MeshRenderer>().enabled = true;
+            }
+            else if (collision.gameObject.name == "Fire")
+            {
+                locationObj = fireLocation;
+                locationObjFound = true;
+                arrowObj.transform.GetChild(0).transform.GetComponent<MeshRenderer>().enabled = true;
+            }
         }
     }
     public void OnCollisionExit(Collision collision) //*************** When user exits the carpet
     {
-        if (collision.gameObject.name == "carpet(Clone)")
+        if (photonView.IsMine)
         {
-            if (collision.gameObject.transform.localScale.x > 0.2)
+            if (collision.gameObject.name == "carpet(Clone)")
             {
-                if (grouped)
+                if (collision.gameObject.transform.localScale.x > 0.2)
                 {
-                    index = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList.Count - 1;
+                    if (grouped)
+                    {
+                        index = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList.Count - 1;
+                    }
+                    passengers = null;
+                    passengerIDs = null;
+                    carpetObj = null;
+                    Debug.Log("Carpet object Null");
+                    onCarpet = false;
+                    teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(false);
                 }
-                passengers = null;
-                passengerIDs = null;
-                carpetObj = null;
-                Debug.Log("Carpet object Null");
-                onCarpet = false;
-                teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(false);
             }
-        }
-        if (collision.gameObject.name == "ComicHandRight(Clone)")
-        {
-            if (carpetObj != null && !carpIsMine && navigatorMode)
+            if (collision.gameObject.name == "ComicHandRight(Clone)")
             {
-                //Debug.Log("Collided With other hand at height : " + collision.gameObject.transform.position.y);
-                if (collision.gameObject.transform.position.y > highFiveHeight)
-                    TransferOwner();
+                if (carpetObj != null && !carpIsMine && navigatorMode)
+                {
+                    //Debug.Log("Collided With other hand at height : " + collision.gameObject.transform.position.y);
+                    if (collision.gameObject.transform.position.y > highFiveHeight)
+                        TransferOwner();
+                }
             }
         }
     }
@@ -604,7 +611,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public void GroupTeleportation()
     {
         Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
-        if (joystickButtonActive && carpetObj!=null)
+        if (joystickButtonActive && carpetObj != null)
         {
             /*Vector3 translateVec = teleportIndicator.transform.position - groundPosition;
             hmdObj.transform.SetParent(null);
@@ -761,7 +768,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
         teleportIndicator.transform.localRotation = Quaternion.Euler(camRot);
 
-        teleportIndicator.transform.RotateAround(carpetChild, Vector3.up, - IndicatorRotation);
+        teleportIndicator.transform.RotateAround(carpetChild, Vector3.up, -IndicatorRotation);
         //teleportIndicator.transform.RotateAround(carpetChild, Vector3.up, -controllerRot);
         //teleportIndicator.transform.Rotate(IndicatorRotation);
         teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
