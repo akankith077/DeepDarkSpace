@@ -10,6 +10,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     public SteamVR_Input_Sources handType;
     public BezierCurve bezier;
+    public ColliderCheck colliderScript;
 
     public SteamVR_Action_Boolean groupTeleportationActive;
     public SteamVR_Action_Boolean groupTeleportationConfirm;
@@ -31,6 +32,12 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     private GameObject leftWristBand;
     private GameObject rightWristBand;
     private GameObject navTag;
+    private GameObject arrowObj;
+    private GameObject backToCarObj;
+    private Vector3 locationObj;
+    public Vector3 fireLocation;
+    public Vector3 foodlocation;
+
 
     public Vector3 nextPos;
     private Vector3 edgeCorrection = new Vector3(1f, 0f, 1f);
@@ -43,11 +50,13 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     private float ControllerRotation = 0;
     public float highFiveHeight = 1.1f;
     private float myRotAngles = 0.0f;
-    private float cntrlrRotScale = 1.8f;
+    private float cntrlrRotScale = 1.5f;
+    private float carpetOldScale = 0.0f;
 
     private GameObject ViewPort;
     private Vector3 smallScale = new Vector3(0.5f, 0.5f, 0.5f);
     private Vector3 normalScale = new Vector3(1f, 1f, 1f);
+    private Vector3 lookAtPos = new Vector3(0f, 0f, 0f);
 
 
     public bool onCarpet = false;
@@ -57,13 +66,20 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     private bool backToCarCheck = false;
     private bool teleButtonCheck = false;
+    private bool locationObjFound = true;
+    private bool check = false;
     public bool cicrleForm = false;
     public bool semiCircForm = false;
     public bool presenterForm = false;
     public bool joystickButtonActive = false;
+    private bool groupTeleButton = false;
+    private bool carpetMoveLock = false;
 
     public Material gold;
     public Material old;
+
+    public Material invisible;
+    public Material glow;
 
     void Start()
     {
@@ -72,16 +88,18 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             platformObj = GameObject.Find("/ViewingSetup/Platform");
             ViewPort = GameObject.Find("/ViewingSetup");
             hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
+
             helmetObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera/Robot/CameraTranslateOnly/RobotHead/Helmet");
             teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
+            arrowObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera/arrow");
             myID = transform.GetComponent<PhotonView>().OwnerActorNr;
             leftHand = GameObject.Find("/ViewingSetup/Platform/ControllerLeft/ComicHandLeft(Clone)");
             leftWristBand = this.transform.GetChild(2).gameObject;
             rightWristBand = leftHand.transform.GetChild(2).gameObject;
+            backToCarObj = leftHand.transform.GetChild(7).gameObject;
             navTag = this.transform.GetChild(4).gameObject;
         }
     }
-
 
     void Update()
     {
@@ -90,7 +108,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             ButtonCheck();
             ControllerRot();
             JoysitckCheck();
-
+            myRotAngles = hmdObj.transform.localEulerAngles.y;
             if (carpetObj != null) //To check the owner of the carpet
             {
                 carpetOwnershipCheck();
@@ -168,6 +186,23 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                     SemiCircleFormation();
                 }
             }
+            if (presenterForm && carpetObj != null) //Circle fromation
+            {
+                if (!navigatorMode)
+                {
+                    if (!carpetObj.GetComponent<PhotonView>().IsMine)
+                    {
+                        carpetObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                        carpetObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                    }
+                    PresenterFormation();
+                }
+            }
+            if (groupTeleButton && carpetObj != null)
+            {
+                float scale = transform.parent.transform.eulerAngles.x / 70f;
+                carpetObj.transform.localScale = new Vector3(carpetOldScale + scale, 1.0f, carpetOldScale + scale);
+            }
 
             if (groupTeleportationConfirm.GetStateUp(handType) && carpetObj != null) //Group Teleportaion 
             {
@@ -187,8 +222,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
             if (carpetObj != null) // Grouping wrist band indication 
             {
-                rightWristBand.GetComponent<MeshRenderer>().enabled = true;
-                leftWristBand.GetComponent<MeshRenderer>().enabled = true;
+                //rightWristBand.GetComponent<MeshRenderer>().enabled = true;
+                //leftWristBand.GetComponent<MeshRenderer>().enabled = true;
                 passengers = carpetObj.GetComponent<pplOnCar>().carpetList;
                 passengerIDs = passengers.ToArray();
             }
@@ -200,15 +235,20 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 carpetObj = null;
                 oldCarpet = null;
             }
+            if (onCarpet == false && grouped == true) //BACK TO CARPET 
+            {
+                BackToCarGlow();
+            }
 
             if (onCarpet == false && grouped == true && backToCarCheck == true) //BACK TO CARPET 
             {
                 carpetPosList = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList;
                 nextPos = carpetPosList[index];
                 teleportIndicator.transform.position = nextPos + edgeCorrection;
-                teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
-                teleportIndicator.transform.GetComponent<CurvedRay>().GetDrawLine(true);
 
+                teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
+
+                teleportIndicator.transform.GetComponent<CurvedRay>().GetDrawLine(true);
                 Vector3 hmdRot = new Vector3(0, hmdObj.transform.eulerAngles.y - hmdObj.transform.eulerAngles.z, 0); //Adding controller Z rotation REMOVE AND ADD CONTRLR ROT
                 teleportIndicator.transform.rotation = Quaternion.Euler(hmdRot);
             }
@@ -228,13 +268,18 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                     index++;
                 }
             }
+
+            if (locationObjFound)
+            {
+                arrowObj.transform.LookAt(locationObj, Vector3.up);
+            }
         }
     }
-
     public void OnCollisionEnter(Collision collision) //*************** When user enters the carpet
     {
         if (collision.gameObject.name == "carpet(Clone)")
         {
+            backToCarObj.GetComponent<MeshRenderer>().material = invisible;
             if (collision.gameObject.transform.localScale.x > 0.2)
             {
                 carpetObj = collision.gameObject;
@@ -243,18 +288,36 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 onCarpet = true;
             }
         }
+        if (collision.gameObject.name == "Food")
+        {
+            locationObj = foodlocation;
+            locationObjFound = true;
+            arrowObj.transform.GetChild(0).transform.GetComponent<MeshRenderer>().enabled = true;
+        }
+        else if (collision.gameObject.name == "Fire")
+        {
+            locationObj = fireLocation;
+            locationObjFound = true;
+            arrowObj.transform.GetChild(0).transform.GetComponent<MeshRenderer>().enabled = true;
+        }
     }
-    public void OnCollisionExit(Collision collision) //*************** When user enters the carpet
+    public void OnCollisionExit(Collision collision) //*************** When user exits the carpet
     {
         if (collision.gameObject.name == "carpet(Clone)")
         {
-            if (grouped)
+            if (collision.gameObject.transform.localScale.x > 0.2)
             {
-                index = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList.Count - 1;
+                if (grouped)
+                {
+                    index = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList.Count - 1;
+                }
+                passengers = null;
+                passengerIDs = null;
+                carpetObj = null;
+                Debug.Log("Carpet object Null");
+                onCarpet = false;
+                teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(false);
             }
-            carpetObj = null;
-            Debug.Log("Carpet object Null");
-            onCarpet = false;
         }
         if (collision.gameObject.name == "ComicHandRight(Clone)")
         {
@@ -269,10 +332,21 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     public void ControllerRot()
     {
-        ControllerRotation = (this.transform.parent.transform.localEulerAngles.z * cntrlrRotScale);
-        ControllerRotation = ControllerRotation - 180;
-        //float step = 10;
-        /*if (ControllerRotation > 180)
+        if (joystickButtonActive)
+        {
+            ControllerRotation = (this.transform.parent.transform.localEulerAngles.z);
+            ControllerRotation = ControllerRotation - 180;
+            /*if (ControllerRotation < 30)
+            {
+                ControllerRotation = 0;
+            }
+            else
+            {
+                ControllerRotation = (ControllerRotation - 30) * cntrlrRotScale;
+            }*/
+        }
+        /*float step = 10;
+        if (ControllerRotation > 180)
         {
             ControllerRotation = ControllerRotation - 360;
         }
@@ -289,75 +363,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         }
         */
     }
-    public void GroupTeleActive()
-    {
-        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
-        Vector3 translateVector = groundPosition - carpetObj.transform.position;
-        translateVector.y = 0f;
-        carpetObj.transform.GetChild(0).position = bezier.EndPoint - translateVector;
-        carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-        Vector3 IndicatorRotation = new Vector3(0, this.transform.parent.transform.localEulerAngles.y - this.transform.parent.localEulerAngles.z, 0);
-        teleportIndicator.transform.rotation = Quaternion.Euler(IndicatorRotation);
-        for (int i = 0; i < passengerIDs.Length; i++)
-        {
-                photonView.RPC("RemoteTeleIndicatorAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
-                carpetObj.transform.GetChild(0).position,
-                carpetObj.transform.position,
-                ControllerRotation,
-                IndicatorRotation);
-        }
-    }
-
-
-    public void GroupTeleDeactivate()
-    {
-        carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-        for (int i = 0; i < passengerIDs.Length; i++)
-        {
-            photonView.RPC("RemoteTeleIndicatorDeAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), false);
-        }
-    }
-
-    public void GroupTeleportation()
-    {
-        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
-        if (joystickButtonActive)
-        {
-            /*Vector3 translateVec = teleportIndicator.transform.position - groundPosition;
-            hmdObj.transform.SetParent(null);
-            platformObj.transform.position = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, platformObj.transform.position.z);
-            hmdObj.transform.SetParent(platformObj.transform);
-            platformObj.transform.localRotation = teleportIndicator.transform.localRotation;
-            Quaternion newRotation = hmdObj.transform.localRotation;
-            newRotation.z = 0;
-            newRotation.x = 0;
-            platformObj.transform.localRotation = platformObj.transform.localRotation * Quaternion.Inverse(newRotation);*/
-            for (int i = 0; i < passengerIDs.Length; i++)
-            {
-                photonView.RPC("RemoteTeleportation", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
-                    carpetObj.transform.GetChild(0).position,
-                    carpetObj.transform.position);
-
-            }
-            carpetObj.transform.position = bezier.EndPoint;
-        }
-        else
-        {
-            Vector3 translateVector = bezier.EndPoint - groundPosition;
-            translateVector.y = 0f;
-            for (int i = 0; i < passengerIDs.Length; i++)
-            {
-
-                photonView.RPC("RemoteTeleportation", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
-                    carpetObj.transform.GetChild(0).position,
-                    carpetObj.transform.position);
-
-            }
-            carpetObj.transform.position += translateVector;
-        }
-
-    }
-
     public void carpetOwnershipCheck()
     {
         if (carpetObj != null && carpetObj.GetComponent<PhotonView>().IsMine)
@@ -387,9 +392,9 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             //Debug.Log("This is my carpet" + carpIsMine);
         }
     }
+    /*
     public void ScalingChange(bool scaleCheck) //todelete
     {
-
         Debug.Log("Scaled");
         if (scaleCheck)
         {
@@ -400,7 +405,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             platformObj.transform.SetParent(ViewPort.transform, true);
             ViewPort.transform.localScale = smallScale;
             carpetObj.transform.SetParent(ViewPort.transform, true);
-
         }
         else
         {
@@ -420,7 +424,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             }
         }
 
-    }
+    }*/
 
     public void ButtonCheck()
     {
@@ -485,6 +489,20 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
             teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = false;
         }
+        if (groupTeleportationConfirm.GetStateDown(handType))
+        {
+            if (carpetObj != null)
+            {
+                carpetOldScale = carpetObj.transform.localScale.x;
+            }
+            //groupTeleButton = true;
+            //carpetMoveLock = true;
+        }
+        else if (groupTeleportationConfirm.GetStateUp(handType))
+        {
+            //groupTeleButton = false;
+            //carpetMoveLock = false;
+        }
 
         if (navigatorToggle.GetStateDown(SteamVR_Input_Sources.RightHand))
         {
@@ -511,6 +529,29 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         }
     }
 
+    public void BackToCarGlow()
+    {
+        if (Time.fixedTime % .5 < .2)
+        {
+            //backToCarObj.GetComponent<MeshRenderer>().enabled = false;
+            backToCarObj.GetComponent<MeshRenderer>().material = invisible;
+        }
+        else
+        {
+            //backToCarObj.GetComponent<MeshRenderer>().enabled = true;
+            backToCarObj.GetComponent<MeshRenderer>().material = glow;
+        }
+
+    }
+
+    private float AngleDifference(float Angle1, float Angle2)
+    {
+        float Difference = Angle2 - Angle1;
+        if (Difference > 180) Difference -= 360;
+        else if (Difference < -180) Difference += 360;
+        return Difference;
+    }
+
     public void TransferOwner()
     {
         if (carpetObj != null)
@@ -525,48 +566,215 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             }
         }
     }
+    public void GroupTeleActive()
+    {
+        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
+        Vector3 translateVector = groundPosition - carpetObj.transform.position;
+        Vector3 IndicatorRotation = new Vector3(0, this.transform.parent.transform.eulerAngles.y - this.transform.parent.eulerAngles.z, 0);
+
+        translateVector.y = 0f;
+        carpetObj.transform.GetChild(0).position = bezier.EndPoint - translateVector;
+        carpetObj.transform.GetChild(0).transform.rotation = Quaternion.Euler(IndicatorRotation);
+        carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+        //teleportIndicator.transform.rotation = Quaternion.Euler(IndicatorRotation);
+        ControllerRotation = (this.transform.parent.transform.localEulerAngles.z);
+        if (ControllerRotation > 180)
+        {
+            ControllerRotation = ControllerRotation - 360;
+        }
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            photonView.RPC("RemoteTeleIndicatorAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
+            carpetObj.transform.GetChild(0).position,
+            carpetObj.transform.position,
+            ControllerRotation);
+        }
+    }
+
+
+    public void GroupTeleDeactivate()
+    {
+        carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            photonView.RPC("RemoteTeleIndicatorDeAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), false);
+        }
+    }
+
+    public void GroupTeleportation()
+    {
+        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
+        if (joystickButtonActive && carpetObj!=null)
+        {
+            /*Vector3 translateVec = teleportIndicator.transform.position - groundPosition;
+            hmdObj.transform.SetParent(null);
+            platformObj.transform.position = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, platformObj.transform.position.z);
+            hmdObj.transform.SetParent(platformObj.transform);
+            platformObj.transform.localRotation = teleportIndicator.transform.localRotation;
+            Quaternion newRotation = hmdObj.transform.localRotation;
+            newRotation.z = 0;
+            newRotation.x = 0;
+            platformObj.transform.localRotation = platformObj.transform.localRotation * Quaternion.Inverse(newRotation);*/
+            for (int i = 0; i < passengerIDs.Length; i++)
+            {
+                photonView.RPC("RemoteTeleportation", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
+                    carpetObj.transform.GetChild(0).position,
+                    carpetObj.transform.position);
+
+            }
+            carpetObj.transform.position = bezier.EndPoint;
+        }
+        else
+        {
+            Vector3 translateVector = bezier.EndPoint - groundPosition;
+            translateVector.y = 0f;
+            for (int i = 0; i < passengerIDs.Length; i++)
+            {
+
+                photonView.RPC("RemoteTeleportation", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
+                    carpetObj.transform.GetChild(0).position,
+                    carpetObj.transform.position);
+
+            }
+            carpetObj.transform.position += translateVector;
+        }
+
+    }
 
     public void CircleFormation()
     {
-        float angleSection = Mathf.PI * 2f / passengerIDs.Length;
         for (int i = 0; i < passengerIDs.Length; i++)
         {
-            float angle = i * angleSection;
-            Vector3 newPos = carpetObj.transform.GetChild(0).position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * (carpetObj.transform.localScale.x - 0.2f);
-            carpetObj.transform.GetChild(0).position = bezier.EndPoint;
+            GameObject PosObj = carpetObj.transform.GetChild(0).transform.GetChild(i).gameObject;
+            Vector3 carRotation = new Vector3(0, transform.parent.transform.rotation.eulerAngles.y - transform.parent.transform.rotation.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
+
+            if (!carpetMoveLock)
+            { carpetObj.transform.GetChild(0).position = bezier.EndPoint; }
+
+            carpetObj.transform.GetChild(0).transform.rotation = Quaternion.Euler(carRotation);
             carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-            photonView.RPC("RemoteCircleForm", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), newPos, carpetObj.transform.GetChild(0).position, ControllerRotation + myRotAngles);
+            photonView.RPC("RemoteCircleForm", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
+                    PosObj.transform.position,
+                    carpetObj.transform.GetChild(0).position
+                    );
         }
     }
 
     public void SemiCircleFormation()
     {
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            GameObject PosObj = carpetObj.transform.GetChild(0).transform.GetChild(i).gameObject; ;
+            if (passengerIDs.Length == 2)
+            {
+                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(i + 1).gameObject;
+            }
+            Vector3 carRotation = new Vector3(0, transform.parent.transform.rotation.eulerAngles.y - transform.parent.transform.rotation.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
+            if (!carpetMoveLock)
+            { carpetObj.transform.GetChild(0).position = bezier.EndPoint; }
+            carpetObj.transform.GetChild(0).transform.rotation = Quaternion.Euler(carRotation);
+            carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+            photonView.RPC("RemoteSemiCircleForm", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
+                PosObj.transform.position,
+                carpetObj.transform.GetChild(0).transform.forward
+                );
+        }
+        /*
         float angleSection = Mathf.PI * 4f / passengerIDs.Length;
         for (int i = 0; i < passengerIDs.Length; i++)
         {
-            float angle = (i * angleSection);// + ControllerRotation;
+            float angle = (i * (angleSection + myRotAngles));// + ControllerRotation;
             Vector3 newPos = carpetObj.transform.GetChild(0).position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * carpetObj.transform.localScale.x;
+            carpetObj.transform.GetChild(0).position = bezier.EndPoint;
+            carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+            photonView.RPC("RemoteSemiCircleForm", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), 
+                newPos, 
+                carpetObj.transform.GetChild(0).position,
+                ControllerRotation,
+                myRotAngles - 90,
+                hmdObj.transform.forward);
+        }*/
+    }
+    public void PresenterFormation()
+    {
+        int f = 0;
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            GameObject PosObj = null;
+            float ActorNr = transform.GetComponent<PhotonView>().OwnerActorNr;
+            if (ActorNr == passengerIDs[i])
+            {
+                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject;
+                lookAtPos = carpetObj.transform.GetChild(0).transform.GetChild(3).gameObject.transform.position;
+            }
+            else
+            {
+                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(4 + f).gameObject;
+                lookAtPos = hmdObj.transform.position;
+                f++;
+            }
+            Vector3 carRotation = new Vector3(0, transform.parent.transform.rotation.eulerAngles.y - transform.parent.transform.rotation.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
 
-            //photonView.RPC("RemoteCircleForm", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), newPos, carpetObj.transform.GetChild(0).position);
+            if (!carpetMoveLock)
+            { carpetObj.transform.GetChild(0).position = bezier.EndPoint; }
+
+            carpetObj.transform.GetChild(0).transform.rotation = Quaternion.Euler(carRotation);
+            carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+            photonView.RPC("RemotePresenterForm", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
+                    PosObj.transform.position,
+                    lookAtPos
+                    );
         }
+        /*
+        float angleSection = Mathf.PI * 4f / passengerIDs.Length;
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            float angle = (i * (angleSection + myRotAngles));// + ControllerRotation;
+            Vector3 newPos = carpetObj.transform.GetChild(0).position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * carpetObj.transform.localScale.x;
+            carpetObj.transform.GetChild(0).position = bezier.EndPoint;
+            carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+            photonView.RPC("RemoteSemiCircleForm", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), 
+                newPos, 
+                carpetObj.transform.GetChild(0).position,
+                ControllerRotation,
+                myRotAngles - 90,
+                hmdObj.transform.forward);
+        }*/
     }
 
+
+    //**************************************************************************************************************** RPCs
+
     [PunRPC]
-    void RemoteTeleIndicatorAcitve(Vector3 carpetChild, Vector3 carpet, float controllerRot, Vector3 IndicatorRotation)  //*************** RPC for teleportation
+    void RemoteTeleIndicatorAcitve(Vector3 carpetChild, Vector3 carpet, float IndicatorRotation)  //*************** RPC for teleportation
     {
         platformObj = GameObject.Find("/ViewingSetup/Platform");
         hmdObj = GameObject.Find("/ViewingSetup/Platform/HMDCamera");
         teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
+        Vector3 camRot = new Vector3(0.0f, hmdObj.transform.eulerAngles.y - hmdObj.transform.eulerAngles.z, 0.0f); // Camera Rotation
+        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z); // Ground postion relative to camera
 
-        Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
         Vector3 translateVector = groundPosition - carpet;
         translateVector.y = 0f;
+
         teleportIndicator.transform.position = carpetChild + translateVector;
-        //Vector3 IndicatorRotation = new Vector3(0, .transform.eulerAngles.y - hmdObj.transform.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
-        teleportIndicator.transform.RotateAround(carpetChild, Vector3.up, controllerRot);
-        teleportIndicator.transform.rotation = Quaternion.Euler(IndicatorRotation);
+
+        teleportIndicator.transform.localRotation = Quaternion.Euler(camRot);
+
+        teleportIndicator.transform.RotateAround(carpetChild, Vector3.up, - IndicatorRotation);
+        //teleportIndicator.transform.RotateAround(carpetChild, Vector3.up, -controllerRot);
+        //teleportIndicator.transform.Rotate(IndicatorRotation);
         teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
         teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(true);
+    }
+
+    [PunRPC]
+    void RemoteTeleIndicatorDeAcitve(bool check)  //*************** RPC for teleportation
+    {
+        teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
+
+        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = check;
+        teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(check);
     }
 
 
@@ -584,27 +792,51 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
         platformObj.transform.position += translateVector;
 
-        hmdObj.transform.SetParent(null);
-        platformObj.transform.position = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, platformObj.transform.position.z);
-        hmdObj.transform.SetParent(platformObj.transform);
-        platformObj.transform.localRotation = teleportIndicator.transform.localRotation;
-        Quaternion newRotation = hmdObj.transform.localRotation;
-        newRotation.z = 0;
-        newRotation.x = 0;
+        groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
 
-        platformObj.transform.RotateAround(hmdObj.transform.position, Vector3.up, -hmdObj.transform.localEulerAngles.y);
-        //platformObj.transform.localRotation = platformObj.transform.localRotation * Quaternion.Inverse(newRotation);
+        float difference = AngleDifference(platformObj.transform.eulerAngles.y, teleportIndicator.transform.eulerAngles.y);
+
+        platformObj.transform.RotateAround(hmdObj.transform.position, Vector3.up, (difference - hmdObj.transform.localEulerAngles.y));
+
+        //platformObj.transform.localRotation = platformObj.transform.localRotation * Quaternion.Inverse(newRotation); 
     }
 
     [PunRPC]
-    void RemoteTeleIndicatorDeAcitve(bool check)  //*************** RPC for teleportation
+    void RemoteCircleForm(Vector3 newPos, Vector3 carpetPos)  //*************** RPC for teleportation
     {
         teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
+        teleportIndicator.transform.position = newPos;
 
-        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = check;
-        teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(check);
+        teleportIndicator.transform.LookAt(carpetPos);
+
+        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
+        teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(true);
     }
 
+    [PunRPC]
+    void RemoteSemiCircleForm(Vector3 newPos, Vector3 direction)  //*************** RPC for teleportation
+    {
+        teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
+        teleportIndicator.transform.position = newPos;
+        direction.y = 0;
+        teleportIndicator.transform.forward = direction;
+        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
+        teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(true);
+    }
+
+    [PunRPC]
+    void RemotePresenterForm(Vector3 newPos, Vector3 lookPos)  //*************** RPC for teleportation
+    {
+        teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
+        teleportIndicator.transform.position = newPos;
+        //teleportIndicator.transform.RotateAround(carpetPos, Vector3.up, rot);
+        teleportIndicator.transform.LookAt(lookPos);
+
+        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
+        teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(true);
+    }
+
+    /*
     [PunRPC]
     void SwitchingTechnique(bool check)
     {
@@ -632,18 +864,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             platformObj.transform.SetParent(ViewPort.transform, true);
             ViewPort.transform.localScale = normalScale;
         }
-    }
-
-    [PunRPC]
-    void RemoteCircleForm(Vector3 newPos, Vector3 carpetPos, float rot)  //*************** RPC for teleportation
-    {
-        teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
-        teleportIndicator.transform.position = newPos;
-        teleportIndicator.transform.RotateAround(carpetPos, Vector3.up, rot);
-        teleportIndicator.transform.LookAt(carpetPos);
-
-        teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
-        teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(true);
-    }
+    }*/
 
 }

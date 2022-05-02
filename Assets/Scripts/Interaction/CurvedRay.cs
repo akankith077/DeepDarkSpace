@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
-using Photon.Realtime;
 
-public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
+public class CurvedRay : MonoBehaviour
 {
+
+    public LayerMask rayCastLayers;
 
     private Vector3 endpoint;
     private Vector3 midpoint;
@@ -40,13 +40,10 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
 
     void Update()
     {
-        if (photonView.IsMine)
-        {
             controllerTrans = controllerObject.transform;
             headSetMidpoint = cameraObject.transform.position + (cameraObject.transform.forward * extendStep * 2f / 5f) + new Vector3(0.0f, 1.0f, 0.0f);
             controllerMidpoint = controllerTrans.transform.position + (controllerTrans.transform.forward * extendStep * 2f / 5f);
             UpdateControlPoints(controllerTrans);
-        }
         HandleExtention();
         DrawCurvedLine();
         DrawLine(drawLine);
@@ -153,23 +150,4 @@ public class CurvedRay : MonoBehaviourPunCallbacks, IPunObservable
             Mathf.Pow(t, 2) * p2;
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            /*bool drawCheck = drawLine; //uncomment to make like distributed
-            stream.SendNext(drawCheck);
-            stream.SendNext(controlPoints[0]);
-            stream.SendNext(controlPoints[1]);
-            stream.SendNext(controlPoints[2]);*/
-        }
-        else
-        {
-            /*bool drawcheck = (bool)stream.ReceiveNext();
-            drawLine = drawcheck;
-            controlPoints[0] = (Vector3)stream.ReceiveNext();
-            controlPoints[1] = (Vector3)stream.ReceiveNext();
-            controlPoints[2] = (Vector3)stream.ReceiveNext();*/
-        }
-    }
 }

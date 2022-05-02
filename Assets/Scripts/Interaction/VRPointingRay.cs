@@ -21,6 +21,8 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
 
     public SteamVR_Action_Boolean rayActivationAction;
     public SteamVR_Action_Boolean rayDraggingAction;
+    public SteamVR_Action_Boolean DelRayActive;
+    public SteamVR_Action_Boolean DelRayPress;
     public HandSide controllerHand;
 
     private SteamVR_Input_Sources handType;
@@ -33,7 +35,10 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
     private bool carpetActive = false;
     private bool resize = false;
     private bool carpetFound = false;
+    private bool redRayActive = false;
     private RaycastHit currentHit;
+    public Material Red;
+    public Material Green;
 
     private DraggableObject requestedOwnershipObject;
     private DraggableObject draggedObject;
@@ -80,8 +85,20 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
         if (!photonView.IsMine)
             return;
 
-        if (rayActivationAction.GetStateDown(handType))
+        if (DelRayActive.GetStateDown(handType))
         {
+            rayVisCylinder.transform.GetChild(0).GetComponent<Renderer>().material = Red;
+            ActivateRayCast(true);
+            redRayActive = true;
+        }
+        else if (DelRayActive.GetStateUp(handType))
+        {
+            redRayActive = false;
+        }
+
+        if (rayActivationAction.GetStateDown(handType) && !redRayActive)
+        {
+            rayVisCylinder.transform.GetChild(0).GetComponent<Renderer>().material = Green;
             ActivateRayCast(true);
         }
         else if (rayActivationAction.GetStateUp(handType))
@@ -111,7 +128,27 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                     hitObjPoint = currentHit.transform.position;
                 }
             }
-            
+            if (DelRayPress.GetStateDown(handType))
+            {
+                if (currentHit.collider.name == "Collider")
+                {
+                    //hitObj = currentHit.transform.parent.transform.gameObject;
+                    if (!hitObj.GetComponent<PhotonView>().IsMine)
+                    {
+                        hitObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                        hitObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                    }
+                    hitObj.transform.localScale = new Vector3(0.0f, 1.0f, 0.0f);
+                    hitObj.transform.GetComponent<MeshRenderer>().enabled = false;
+
+                    if (hitObj.GetComponent<PhotonView>().CreatorActorNr != myID)
+                    {
+                        hitObj.GetComponent<PhotonView>().TransferOwnership(hitObj.GetComponent<PhotonView>().CreatorActorNr);
+                        hitObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(hitObj.GetComponent<PhotonView>().CreatorActorNr);
+                    }
+                }
+            }
+
             if (rayDraggingAction.GetStateDown(handType) && carpetFound == false)
             {
                 if (!carpet.GetComponent<PhotonView>().IsMine)
@@ -119,12 +156,15 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                     carpet.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                     carpet.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                 }
-                carpet.transform.position = currentHit.point;
-                carpet.GetComponentInChildren<MeshRenderer>().enabled = true;
-                carpet.GetComponent<BoxCollider>().enabled = true;
-                carpetActive = true;
+                if (currentHit.transform.name == "Floor")
+                {
+                    carpet.transform.position = currentHit.point;
+                    carpet.GetComponentInChildren<MeshRenderer>().enabled = true;
+                    carpet.GetComponent<BoxCollider>().enabled = true;
+                    carpetActive = true;
+                }
 
-                /*if (currentHit.collider)
+                if (currentHit.collider)
                 {
                     DraggableObject dragComponent = currentHit.collider.gameObject.GetComponent<DraggableObject>();
                     //Debug.Log("HIT OBJECT Try Requesting ownershippp  ===  " + currentHit.collider.name);
@@ -134,7 +174,7 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                         requestedOwnershipObject = dragComponent;
                         dragComponent.HandleOwnershipRequest();
                     }
-                }*/
+                }
             }
             if (carpetActive) //CREATION OF CARPET
             {
@@ -148,7 +188,6 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                 //carpet.GetComponent<BoxCollider>().size = new Vector3(carpetSize, 2.0f, carpetSize);
             }
 
-
             if (carpetFound) //RESIZING OF CARPET
             {
                 if (rayDraggingAction.GetStateDown(handType))
@@ -160,11 +199,9 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                     }
                     resize = true;
                     hitObj.transform.GetChild(1).transform.gameObject.layer = 2;
-
                 }
             }
 
-           
             if (resize)
             {
                 float carpetSize = Vector3.Distance(new Vector3(hitObjPoint.x, 0, hitObjPoint.z), new Vector3(currentHit.point.x, 0, currentHit.point.z));
@@ -172,7 +209,7 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                 {
                     carpetSize = carpetMaxSize;
                 }
-                hitObj.transform.localScale = new Vector3(carpetSize + carpetResize, 1.0f, carpetSize+ carpetResize);
+                hitObj.transform.localScale = new Vector3(carpetSize + carpetResize, 1.0f, carpetSize + carpetResize);
             }
 
             if (rayDraggingAction.GetStateUp(handType))

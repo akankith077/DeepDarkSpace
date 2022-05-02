@@ -54,7 +54,7 @@ public class pplOnCar : MonoBehaviourPunCallbacks
         if (collision.transform.name != "carpet(clone)")
         {
             int checkID = collision.gameObject.GetComponent<PhotonView>().OwnerActorNr;
-            string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
+            //string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
             passengers.Add(checkID);
             passengerIDs = passengers.ToArray();
         }
@@ -88,8 +88,8 @@ public class pplOnCar : MonoBehaviourPunCallbacks
     [PunRPC]
     void SetCarpetColor(string colorName)
     {
-        Material shirtMaterial = Resources.Load<Material>(GlobalSettings.shirtMaterialsPath + colorName);
-        Material TranspShirtMaterial = Resources.Load<Material>(GlobalSettings.shirtMaterialsPath + colorName + " 1");
+        Material shirtMaterial = Resources.Load<Material>("Materials/CarpetMaterial/" + colorName);
+        Material TranspShirtMaterial = Resources.Load<Material>("Materials/CarpetMaterial/" + colorName + " 1");
         this.GetComponent<Renderer>().material = shirtMaterial;
         transform.GetChild(0).GetComponent<Renderer>().material = TranspShirtMaterial;
     }

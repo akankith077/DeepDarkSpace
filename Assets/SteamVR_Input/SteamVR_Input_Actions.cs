@@ -47,6 +47,10 @@ namespace Valve.VR
         
         private static SteamVR_Action_Boolean p_default_semiCircForm;
         
+        private static SteamVR_Action_Boolean p_default_carpetDelete;
+        
+        private static SteamVR_Action_Boolean p_default_carpetDeleteActive;
+        
         private static SteamVR_Action_Vibration p_default_Haptic;
         
         public static SteamVR_Action_Pose default_Pose
@@ -169,6 +173,22 @@ namespace Valve.VR
             }
         }
         
+        public static SteamVR_Action_Boolean default_carpetDelete
+        {
+            get
+            {
+                return SteamVR_Actions.p_default_carpetDelete.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Boolean default_carpetDeleteActive
+        {
+            get
+            {
+                return SteamVR_Actions.p_default_carpetDeleteActive.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
         public static SteamVR_Action_Vibration default_Haptic
         {
             get
@@ -195,6 +215,8 @@ namespace Valve.VR
                     SteamVR_Actions.default_circleForm,
                     SteamVR_Actions.default_presentorForm,
                     SteamVR_Actions.default_semiCircForm,
+                    SteamVR_Actions.default_carpetDelete,
+                    SteamVR_Actions.default_carpetDeleteActive,
                     SteamVR_Actions.default_Haptic};
             Valve.VR.SteamVR_Input.actionsIn = new Valve.VR.ISteamVR_Action_In[] {
                     SteamVR_Actions.default_Pose,
@@ -211,7 +233,9 @@ namespace Valve.VR
                     SteamVR_Actions.default_indiTeleConfirm,
                     SteamVR_Actions.default_circleForm,
                     SteamVR_Actions.default_presentorForm,
-                    SteamVR_Actions.default_semiCircForm};
+                    SteamVR_Actions.default_semiCircForm,
+                    SteamVR_Actions.default_carpetDelete,
+                    SteamVR_Actions.default_carpetDeleteActive};
             Valve.VR.SteamVR_Input.actionsOut = new Valve.VR.ISteamVR_Action_Out[] {
                     SteamVR_Actions.default_Haptic};
             Valve.VR.SteamVR_Input.actionsVibration = new Valve.VR.SteamVR_Action_Vibration[] {
@@ -231,7 +255,9 @@ namespace Valve.VR
                     SteamVR_Actions.default_indiTeleConfirm,
                     SteamVR_Actions.default_circleForm,
                     SteamVR_Actions.default_presentorForm,
-                    SteamVR_Actions.default_semiCircForm};
+                    SteamVR_Actions.default_semiCircForm,
+                    SteamVR_Actions.default_carpetDelete,
+                    SteamVR_Actions.default_carpetDeleteActive};
             Valve.VR.SteamVR_Input.actionsSingle = new Valve.VR.SteamVR_Action_Single[] {
                     SteamVR_Actions.default_SteeringTrigger};
             Valve.VR.SteamVR_Input.actionsVector2 = new Valve.VR.SteamVR_Action_Vector2[0];
@@ -251,7 +277,9 @@ namespace Valve.VR
                     SteamVR_Actions.default_indiTeleConfirm,
                     SteamVR_Actions.default_circleForm,
                     SteamVR_Actions.default_presentorForm,
-                    SteamVR_Actions.default_semiCircForm};
+                    SteamVR_Actions.default_semiCircForm,
+                    SteamVR_Actions.default_carpetDelete,
+                    SteamVR_Actions.default_carpetDeleteActive};
         }
         
         private static void PreInitActions()
@@ -271,6 +299,8 @@ namespace Valve.VR
             SteamVR_Actions.p_default_circleForm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/circleForm")));
             SteamVR_Actions.p_default_presentorForm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/presentorForm")));
             SteamVR_Actions.p_default_semiCircForm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/semiCircForm")));
+            SteamVR_Actions.p_default_carpetDelete = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/carpetDelete")));
+            SteamVR_Actions.p_default_carpetDeleteActive = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/carpetDeleteActive")));
             SteamVR_Actions.p_default_Haptic = ((SteamVR_Action_Vibration)(SteamVR_Action.Create<SteamVR_Action_Vibration>("/actions/default/out/Haptic")));
         }
     }

@@ -137,6 +137,22 @@ namespace Valve.VR
             }
         }
         
+        public virtual SteamVR_Action_Boolean carpetDelete
+        {
+            get
+            {
+                return SteamVR_Actions.default_carpetDelete;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean carpetDeleteActive
+        {
+            get
+            {
+                return SteamVR_Actions.default_carpetDeleteActive;
+            }
+        }
+        
         public virtual SteamVR_Action_Vibration Haptic
         {
             get

@@ -194,7 +194,15 @@ MonoBehaviour:
   rayDraggingAction:
     actionPath: /actions/default/in/PointingRayDragging
     needsReinit: 0
+  DelRayActive:
+    actionPath: 
+    needsReinit: 0
+  DelRayPress:
+    actionPath: 
+    needsReinit: 0
   controllerHand: 0
+  Red: {fileID: 0}
+  Green: {fileID: 0}
 --- !u!1 &3431102494557005655
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,17 +488,17 @@ PrefabInstance:
     - target: {fileID: 1412327603277157392, guid: a1d7fbc534e4e754aa5c65c3008ec141,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1412327603277157392, guid: a1d7fbc534e4e754aa5c65c3008ec141,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1412327603277157392, guid: a1d7fbc534e4e754aa5c65c3008ec141,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1412327603277157392, guid: a1d7fbc534e4e754aa5c65c3008ec141,
         type: 3}

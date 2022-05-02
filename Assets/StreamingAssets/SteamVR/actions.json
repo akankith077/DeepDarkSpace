@@ -61,6 +61,14 @@
       "type": "boolean"
     },
     {
+      "name": "/actions/default/in/carpetDelete",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/default/in/carpetDeleteActive",
+      "type": "boolean"
+    },
+    {
       "name": "/actions/default/out/Haptic",
       "type": "vibration"
     }

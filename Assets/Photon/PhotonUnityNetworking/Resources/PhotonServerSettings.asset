@@ -78,6 +78,8 @@ MonoBehaviour:
   - SwitchingTechnique
   - RemoteScaling
   - RemoteCircleForm
+  - RemotePresenterForm
+  - RemoteSemiCircleForm
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
