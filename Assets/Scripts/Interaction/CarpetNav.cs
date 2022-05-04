@@ -112,6 +112,9 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             if (carpetObj != null) //To check the owner of the carpet
             {
                 carpetOwnershipCheck();
+                float scaleVal = carpetObj.transform.localScale.x;
+                edgeCorrection = new Vector3( carpetObj.transform.localScale.x - (scaleVal / 2) , 0.0f, carpetObj.transform.localScale.x - (scaleVal / 2));
+                Debug.Log("EC = "+ edgeCorrection.x);
             }
 
             if (navigatorMode) //Navigator Mode Indication
@@ -506,7 +509,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             //carpetMoveLock = true;
         }
         else if (groupTeleportationConfirm.GetStateUp(handType))
-        {   
+        {
             if (carpetObj != null)
             {
                 GroupTeleDeactivate();

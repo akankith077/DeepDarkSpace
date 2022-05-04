@@ -58,7 +58,7 @@
             {
                "inputs" : {
                   "east" : {
-                     "output" : "/actions/default/in/semicircform"
+                     "output" : "/actions/default/in/presentorform"
                   },
                   "north" : {
                      "output" : "/actions/default/in/circleform"
@@ -67,7 +67,7 @@
                      "output" : "/actions/default/in/teleactive"
                   },
                   "west" : {
-                     "output" : "/actions/default/in/presentorform"
+                     "output" : "/actions/default/in/semicircform"
                   }
                },
                "mode" : "dpad",
@@ -145,7 +145,7 @@
    "category" : "steamvr_input",
    "controller_type" : "vive_controller",
    "description" : "",
-   "name" : "vIVEE",
+   "name" : "Vive Final",
    "options" : {},
    "simulated_actions" : []
 }
