@@ -40,10 +40,10 @@ public class CurvedRay : MonoBehaviour
 
     void Update()
     {
-            controllerTrans = controllerObject.transform;
-            headSetMidpoint = cameraObject.transform.position + (cameraObject.transform.forward * extendStep * 2f / 5f) + new Vector3(0.0f, 1.0f, 0.0f);
-            controllerMidpoint = controllerTrans.transform.position + (controllerTrans.transform.forward * extendStep * 2f / 5f);
-            UpdateControlPoints(controllerTrans);
+        controllerTrans = controllerObject.transform;
+        headSetMidpoint = cameraObject.transform.position + (cameraObject.transform.forward * extendStep * 2f / 5f) + new Vector3(0.0f, 1.0f, 0.0f);
+        controllerMidpoint = controllerTrans.transform.position + (controllerTrans.transform.forward * extendStep * 2f / 5f);
+        UpdateControlPoints(controllerTrans);
         HandleExtention();
         DrawCurvedLine();
         DrawLine(drawLine);
@@ -131,7 +131,7 @@ public class CurvedRay : MonoBehaviour
     {
         Ray r = new Ray(start, end - start);
         RaycastHit hit;
-        if (endpoint == teleTranform.position )
+        if (endpoint == teleTranform.position)
         {
             endpoint = teleTranform.position;
             return true;

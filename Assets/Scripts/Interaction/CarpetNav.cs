@@ -317,8 +317,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                     {
                         index = oldCarpet.transform.GetComponent<pplOnCar>().carpetPosList.Count - 1;
                     }
-                    passengers = null;
-                    passengerIDs = null;
                     carpetObj = null;
                     Debug.Log("Carpet object Null");
                     onCarpet = false;

@@ -64,7 +64,7 @@ public class pplOnCar : MonoBehaviourPunCallbacks
         if (collision.transform.name != "carpet(clone)")
         {
             int checkID = collision.gameObject.GetComponent<PhotonView>().OwnerActorNr;
-            string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
+            //string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
             passengers.Remove(checkID);
             passengerIDs = passengers.ToArray();
         }

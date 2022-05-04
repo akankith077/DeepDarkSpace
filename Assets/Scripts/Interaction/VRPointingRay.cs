@@ -17,12 +17,15 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
     public float myID = 0;
     public float carpetResize = 0.2f;
     public float carpetMaxSize = 3.2f;
+    private float triggerSize = 0;
     public LayerMask rayCastLayers;
 
     public SteamVR_Action_Boolean rayActivationAction;
     public SteamVR_Action_Boolean rayDraggingAction;
     public SteamVR_Action_Boolean DelRayActive;
     public SteamVR_Action_Boolean DelRayPress;
+    public SteamVR_Action_Boolean switchRay;
+    public SteamVR_Action_Single Trigger;
     public HandSide controllerHand;
 
     private SteamVR_Input_Sources handType;
@@ -31,11 +34,13 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
     private GameObject rayVisCylinder;
     private GameObject carpet;
     private GameObject hitObj;
+    public GameObject switchButton;
     private bool rayCastActive = false;
     private bool carpetActive = false;
     private bool resize = false;
     private bool carpetFound = false;
     private bool redRayActive = false;
+    private bool triggerCheck = false;
     private RaycastHit currentHit;
     public Material Red;
     public Material Green;
@@ -84,24 +89,27 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
     {
         if (!photonView.IsMine)
             return;
-
-        if (DelRayActive.GetStateDown(handType))
+        TriggerCheck();
+        if (switchRay.GetStateDown(handType))
         {
-            rayVisCylinder.transform.GetChild(0).GetComponent<Renderer>().material = Red;
+            if (redRayActive)
+            {
+                redRayActive = false;
+                switchButton.transform.GetComponent<Renderer>().material = Green;
+                rayVisCylinder.transform.GetChild(0).GetComponent<Renderer>().material = Green;
+            }
+            else
+            {
+                redRayActive = true;
+                switchButton.transform.GetComponent<Renderer>().material = Red;
+                rayVisCylinder.transform.GetChild(0).GetComponent<Renderer>().material = Red;
+            }
+        }
+        if (rayActivationAction.GetStateDown(handType) || triggerCheck)
+        {
             ActivateRayCast(true);
-            redRayActive = true;
         }
-        else if (DelRayActive.GetStateUp(handType))
-        {
-            redRayActive = false;
-        }
-
-        if (rayActivationAction.GetStateDown(handType) && !redRayActive)
-        {
-            rayVisCylinder.transform.GetChild(0).GetComponent<Renderer>().material = Green;
-            ActivateRayCast(true);
-        }
-        else if (rayActivationAction.GetStateUp(handType))
+        else if (rayActivationAction.GetStateUp(handType) || !triggerCheck)
         {
             ActivateRayCast(false);
             rayVisCylinder.GetComponentInChildren<MeshRenderer>().enabled = false;
@@ -176,7 +184,29 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                     }
                 }
             }
-            if (carpetActive) //CREATION OF CARPET
+            if (redRayActive && rayDraggingAction.GetStateDown(handType) && carpetFound)
+            {
+                if (currentHit.collider.name == "Collider")
+                {
+                    //hitObj = currentHit.transform.parent.transform.gameObject;
+                    if (!hitObj.GetComponent<PhotonView>().IsMine)
+                    {
+                        hitObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                        hitObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+                    }
+                    hitObj.transform.localScale = new Vector3(0.0f, 1.0f, 0.0f);
+                    hitObj.transform.GetComponent<MeshRenderer>().enabled = false;
+
+                    if (hitObj.GetComponent<PhotonView>().CreatorActorNr != myID)
+                    {
+                        hitObj.GetComponent<PhotonView>().TransferOwnership(hitObj.GetComponent<PhotonView>().CreatorActorNr);
+                        hitObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(hitObj.GetComponent<PhotonView>().CreatorActorNr);
+                    }
+                }
+
+            }
+
+            if (carpetActive && !redRayActive) //CREATION OF CARPET
             {
                 float carpetSize = Vector3.Distance(new Vector3(carpet.transform.position.x, 0, carpet.transform.position.z), new Vector3(currentHit.point.x, 0, currentHit.point.z));
                 //Debug.Log("Carpet size" + carpetSize);
@@ -188,7 +218,7 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                 //carpet.GetComponent<BoxCollider>().size = new Vector3(carpetSize, 2.0f, carpetSize);
             }
 
-            if (carpetFound) //RESIZING OF CARPET
+            if (carpetFound && !redRayActive) //RESIZING OF CARPET
             {
                 if (rayDraggingAction.GetStateDown(handType))
                 {
@@ -287,6 +317,19 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
             }
         }
 
+    }
+    public void TriggerCheck()
+    {
+        triggerSize = Trigger.GetAxis(handType);
+        if (triggerSize > 0.2)
+        {
+            triggerCheck = true;
+            Debug.Log("tRIGGER IS PULLED");
+        }
+        else
+        {
+            triggerCheck = false;
+        }
     }
 
     public RaycastHit GetHit()

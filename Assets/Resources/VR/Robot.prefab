@@ -200,7 +200,14 @@ MonoBehaviour:
   DelRayPress:
     actionPath: 
     needsReinit: 0
+  switchRay:
+    actionPath: 
+    needsReinit: 0
+  Trigger:
+    actionPath: 
+    needsReinit: 0
   controllerHand: 0
+  switchButton: {fileID: 0}
   Red: {fileID: 0}
   Green: {fileID: 0}
 --- !u!1 &3431102494557005655

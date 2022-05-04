@@ -265,6 +265,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00695538cb0604e46aab2c1dea27eca4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rayCastLayers:
+    serializedVersion: 2
+    m_Bits: 0
   curvedLine: {fileID: 6148633742378481990}
 --- !u!1 &2438155983227312920
 GameObject:

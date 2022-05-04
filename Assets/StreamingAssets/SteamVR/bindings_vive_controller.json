@@ -36,10 +36,16 @@
          "sources" : [
             {
                "inputs" : {
+                  "east" : {
+                     "output" : "/actions/default/in/teleconfirm"
+                  },
                   "north" : {
-                     "output" : "/actions/default/in/pointingraydragging"
+                     "output" : "/actions/default/in/teleconfirm"
                   },
                   "south" : {
+                     "output" : "/actions/default/in/teleconfirm"
+                  },
+                  "west" : {
                      "output" : "/actions/default/in/teleconfirm"
                   }
                },
@@ -51,41 +57,17 @@
             },
             {
                "inputs" : {
-                  "north" : {
-                     "output" : "/actions/default/in/pointingraydragging"
+                  "east" : {
+                     "output" : "/actions/default/in/semicircform"
                   },
-                  "south" : {
-                     "output" : "/actions/default/in/teleconfirm"
-                  }
-               },
-               "mode" : "dpad",
-               "parameters" : {
-                  "sub_mode" : "click"
-               },
-               "path" : "/user/hand/left/input/trackpad"
-            },
-            {
-               "inputs" : {
                   "north" : {
-                     "output" : "/actions/default/in/pointingrayactivate"
+                     "output" : "/actions/default/in/circleform"
                   },
                   "south" : {
                      "output" : "/actions/default/in/teleactive"
-                  }
-               },
-               "mode" : "dpad",
-               "parameters" : {
-                  "sub_mode" : "touch"
-               },
-               "path" : "/user/hand/left/input/trackpad"
-            },
-            {
-               "inputs" : {
-                  "north" : {
-                     "output" : "/actions/default/in/pointingrayactivate"
                   },
-                  "south" : {
-                     "output" : "/actions/default/in/teleactive"
+                  "west" : {
+                     "output" : "/actions/default/in/presentorform"
                   }
                },
                "mode" : "dpad",
@@ -114,21 +96,39 @@
             },
             {
                "inputs" : {
-                  "click" : {
+                  "south" : {
                      "output" : "/actions/default/in/backtocar"
                   }
                },
-               "mode" : "button",
-               "path" : "/user/hand/right/input/trigger"
+               "mode" : "dpad",
+               "parameters" : {
+                  "sub_mode" : "click"
+               },
+               "path" : "/user/hand/left/input/trackpad"
             },
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/default/in/backtocar"
+                     "output" : "/actions/default/in/inditeleactive"
+                  },
+                  "long" : {
+                     "output" : "/actions/default/in/inditeleconfirm"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/left/input/trigger"
+               "path" : "/user/hand/right/input/system"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/pointingraydragging"
+                  },
+                  "pull" : {
+                     "output" : "/actions/default/in/steeringtrigger"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger"
             }
          ]
       },
@@ -143,7 +143,7 @@
    "category" : "steamvr_input",
    "controller_type" : "vive_controller",
    "description" : "",
-   "name" : "Saved DistributedHMDDesktop [Testing] configuration for Vive Controller",
+   "name" : "vIVEE",
    "options" : {},
    "simulated_actions" : []
 }
