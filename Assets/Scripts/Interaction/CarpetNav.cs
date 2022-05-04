@@ -478,7 +478,10 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             semiCircForm = false;
             teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(false);
             if (carpetObj != null)
+            {
+                GroupTeleDeactivate();
                 carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+            }
             teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = false;
         }
 
@@ -491,20 +494,24 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             presenterForm = false;
             teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(false);
             if (carpetObj != null)
+            {
+                GroupTeleDeactivate();
                 carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+            }
             teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = false;
         }
         if (groupTeleportationConfirm.GetStateDown(handType))
         {
-            if (carpetObj != null)
-            {
-                carpetOldScale = carpetObj.transform.localScale.x;
-            }
             //groupTeleButton = true;
             //carpetMoveLock = true;
         }
         else if (groupTeleportationConfirm.GetStateUp(handType))
-        {
+        {   
+            if (carpetObj != null)
+            {
+                GroupTeleDeactivate();
+                carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+            }
             //groupTeleButton = false;
             //carpetMoveLock = false;
         }
