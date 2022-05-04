@@ -5,6 +5,7 @@ using Valve.VR;
 
 public class formationActivation : MonoBehaviour
 {
+    public CarpetNav carpetNavScript;
     public GameObject circle;
     public GameObject semiCircle;
     public GameObject presenter;
@@ -19,7 +20,17 @@ public class formationActivation : MonoBehaviour
     public SteamVR_Input_Sources handType;
 
     void Update()
-    {
+    {   
+        if(carpetNavScript.carpetObj == null){
+            circle.transform.GetComponent<MeshRenderer>().enabled = false;
+            semiCircle.transform.GetComponent<MeshRenderer>().enabled = false;
+            presenter.transform.GetComponent<MeshRenderer>().enabled = false;
+        }
+        else{
+            circle.transform.GetComponent<MeshRenderer>().enabled = true;
+            semiCircle.transform.GetComponent<MeshRenderer>().enabled = true;
+            presenter.transform.GetComponent<MeshRenderer>().enabled = true;
+        }
         if (cicleAct.GetStateDown(handType))
         {
             circle.GetComponent<Renderer>().material = ON;

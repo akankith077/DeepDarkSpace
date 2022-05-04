@@ -884,7 +884,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4140777251254157091
 Transform:
   m_ObjectHideFlags: 0
@@ -1570,7 +1570,7 @@ GameObject:
   - component: {fileID: 5840121412200549436}
   - component: {fileID: 5840121412200549434}
   - component: {fileID: 5840121412200549435}
-  - component: {fileID: 1800188784759500914}
+  - component: {fileID: 4377597910987445585}
   - component: {fileID: 7384835772958127775}
   - component: {fileID: 1634354248539793296}
   m_Layer: 2
@@ -1708,7 +1708,7 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &1800188784759500914
+--- !u!114 &4377597910987445585
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1717,7 +1717,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5840121412200549433}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b631c371ff1acc84daa6d76cda280a7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 82b66b97fa8792a45894f11fa2ecacda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bezier: {fileID: 5840121412200549434}
@@ -1728,7 +1728,7 @@ MonoBehaviour:
     actionPath: /actions/default/in/indiTeleActive
     needsReinit: 0
   teleportConfirmAction:
-    actionPath: /actions/default/in/indiTeleConfirm
+    actionPath: /actions/default/in/TeleConfirm
     needsReinit: 0
   snapLeftAction:
     actionPath: /actions/default/in/SnapLeft
@@ -1762,7 +1762,8 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: 5840121412200549434}
-  - {fileID: 1800188784759500914}
+  - {fileID: 0}
+  - {fileID: 4377597910987445585}
   - {fileID: 1634354248539793296}
   viewIdField: 0
   InstantiationId: 0

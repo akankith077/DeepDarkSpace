@@ -109,18 +109,6 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/default/in/inditeleactive"
-                  },
-                  "long" : {
-                     "output" : "/actions/default/in/inditeleconfirm"
-                  }
-               },
-               "mode" : "button",
-               "path" : "/user/hand/right/input/system"
-            },
-            {
-               "inputs" : {
-                  "click" : {
                      "output" : "/actions/default/in/pointingraydragging"
                   },
                   "pull" : {
@@ -129,6 +117,20 @@
                },
                "mode" : "trigger",
                "path" : "/user/hand/right/input/trigger"
+            },
+            {
+               "inputs" : {},
+               "mode" : "none",
+               "path" : "/user/hand/right/input/system"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/inditeleactive"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/grip"
             }
          ]
       },

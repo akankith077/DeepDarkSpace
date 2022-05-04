@@ -2152,6 +2152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9adc74245f299b441a17003fca0d0a8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  carpetNavScript: {fileID: 2740626203623088966}
   circle: {fileID: 6904865284292609570}
   semiCircle: {fileID: 827181752900059143}
   presenter: {fileID: 5756967154885619508}

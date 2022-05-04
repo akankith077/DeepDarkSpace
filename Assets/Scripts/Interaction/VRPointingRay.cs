@@ -324,7 +324,6 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
         if (triggerSize > 0.2)
         {
             triggerCheck = true;
-            Debug.Log("tRIGGER IS PULLED");
         }
         else
         {
