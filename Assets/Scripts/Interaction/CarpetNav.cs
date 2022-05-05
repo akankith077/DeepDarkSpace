@@ -47,6 +47,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     private List<Vector3> carpetPosList = new List<Vector3>();
     private int[] passengerIDs = { };
     private int index = 0;
+    private int f = 0;
     private float myID = 0;
     private float otherID = 0;
     private float ControllerRotation = 0;
@@ -588,11 +589,20 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     public void CircleFormation()
     {
+        f = 0;
         float ActorNr = transform.GetComponent<PhotonView>().OwnerActorNr;
         int passengerSize = passengerIDs.Length;
         for (int i = 0; i < passengerSize; i++)
         {
-            PosObj = carpetObj.transform.GetChild(0).transform.GetChild(i).gameObject;
+            if (ActorNr == passengerIDs[i])
+            {
+                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject;
+            }
+            else
+            {
+                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(1 + f).gameObject;
+                f++;
+            }
 
             Vector3 carRotation = new Vector3(0, transform.parent.transform.rotation.eulerAngles.y - transform.parent.transform.rotation.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
 
@@ -610,11 +620,12 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     public void SemiCircleFormation()
     {
+        f = 0;
         float ActorNr = transform.GetComponent<PhotonView>().OwnerActorNr;
         int passengerSize = passengerIDs.Length;
         for (int i = 0; i < passengerSize; i++)
         {
-            if (passengerIDs.Length == 2)
+            if (passengerSize == 2)
             {
                 if (ActorNr == passengerIDs[i])
                 {
@@ -627,7 +638,15 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             }
             else
             {
-                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(i).gameObject;
+                if (ActorNr == passengerIDs[i])
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject;
+                }
+                else
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(1 + f).gameObject;
+                    f++;
+                }
             }
             Vector3 carRotation = new Vector3(0, transform.parent.transform.rotation.eulerAngles.y - transform.parent.transform.rotation.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
             if (!carpetMoveLock)
@@ -642,7 +661,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     }
     public void PresenterFormation()
     {
-        int f = 0;
+        f = 0;
         float ActorNr = transform.GetComponent<PhotonView>().OwnerActorNr;
         int passengerSize = passengerIDs.Length;
         for (int i = 0; i < passengerSize; i++)

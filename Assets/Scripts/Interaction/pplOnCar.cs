@@ -83,7 +83,7 @@ public class pplOnCar : MonoBehaviourPunCallbacks
         {
             int checkID = collision.gameObject.GetComponent<PhotonView>().OwnerActorNr;
             //string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
-            if (!passengers.Contains(checkID))
+            if (passengers.Contains(checkID))
             {
                 passengers.Remove(checkID);
                 passengerIDs = passengers.ToArray();
