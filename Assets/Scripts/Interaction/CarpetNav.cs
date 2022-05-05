@@ -287,14 +287,16 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         {
             if (collision.gameObject.name == "carpet(Clone)")
             {
-
-                backToCarObj.GetComponent<MeshRenderer>().material = invisible;
                 if (collision.gameObject.transform.localScale.x > 0.2)
                 {
                     carpetObj = collision.gameObject;
                     oldCarpet = carpetObj;
                     grouped = true;
                     onCarpet = true;
+                }
+                if (backToCarObj != null)
+                {
+                    backToCarObj.GetComponent<MeshRenderer>().material = invisible;
                 }
             }
             if (collision.gameObject.name == "Food")
@@ -347,32 +349,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         {
             ControllerRotation = (this.transform.parent.transform.localEulerAngles.z);
             ControllerRotation = ControllerRotation - 180;
-            /*if (ControllerRotation < 30)
-            {
-                ControllerRotation = 0;
-            }
-            else
-            {
-                ControllerRotation = (ControllerRotation - 30) * cntrlrRotScale;
-            }*/
         }
-        /*float step = 10;
-        if (ControllerRotation > 180)
-        {
-            ControllerRotation = ControllerRotation - 360;
-        }
-        for (var i = 0f; i < (360 / step); i++)
-        {
-            if (ControllerRotation > i * step && ControllerRotation <= (i + 1) * step)
-            {
-                ControllerRotation = (i * step) + 1;
-            }
-            if (ControllerRotation < i * (-step) && ControllerRotation >= (i + 1) * (-step))
-            {
-                ControllerRotation = -(i * step) + 1;
-            }
-        }
-        */
     }
     public void carpetOwnershipCheck()
     {
@@ -391,7 +368,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 rightWristBand.GetComponent<Renderer>().material = old;
                 leftWristBand.GetComponent<Renderer>().material = old;
             }
-            //Debug.Log("This is my carpet  " + carpIsMine);
         }
         else
         {
@@ -400,42 +376,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             {
                 helmetObj.GetComponent<MeshRenderer>().enabled = false;
             }
-            //Debug.Log("This is my carpet" + carpIsMine);
         }
     }
-    /*
-    public void ScalingChange(bool scaleCheck) //todelete
-    {
-        Debug.Log("Scaled");
-        if (scaleCheck)
-        {
-            platformObj.transform.SetParent(null);
-            carpetObj.transform.SetParent(null);
-            carpetObj.transform.localScale = new Vector3(carpetObj.transform.localScale.x / 1.8f, carpetObj.transform.localScale.y, carpetObj.transform.localScale.z / 1.8f);
-            ViewPort.transform.position = new Vector3(carpetObj.transform.position.x, ViewPort.transform.position.y, carpetObj.transform.position.z);
-            platformObj.transform.SetParent(ViewPort.transform, true);
-            ViewPort.transform.localScale = smallScale;
-            carpetObj.transform.SetParent(ViewPort.transform, true);
-        }
-        else
-        {
-            platformObj.transform.SetParent(null);
-            carpetObj.transform.SetParent(null);
-            ViewPort.transform.position = new Vector3(carpetObj.transform.position.x, ViewPort.transform.position.y, carpetObj.transform.position.z);
-            carpetObj.transform.localScale = new Vector3(carpetObj.transform.localScale.x * 1.8f, carpetObj.transform.localScale.y, carpetObj.transform.localScale.z * 1.8f);
-            platformObj.transform.SetParent(ViewPort.transform, true);
-            ViewPort.transform.localScale = normalScale;
-            carpetObj.transform.SetParent(ViewPort.transform, true);
-        }
-        for (int i = 0; i < passengerIDs.Length; i++)
-        {
-            if (passengerIDs[i] != myID)
-            {
-                photonView.RPC("RemoteScaling", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), scaleCheck, carpetObj.transform.position);
-            }
-        }
-
-    }*/
 
     public void ButtonCheck()
     {
@@ -471,7 +413,10 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             cicrleForm = false;
             teleportIndicator.GetComponent<CurvedRay>().GetDrawLine(false);
             if (carpetObj != null)
+            {
+                GroupTeleDeactivate();
                 carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+            }
             teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = false;
         }
 
@@ -506,20 +451,14 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             }
             teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = false;
         }
-        if (groupTeleportationConfirm.GetStateDown(handType))
-        {
-            //groupTeleButton = true;
-            //carpetMoveLock = true;
-        }
-        else if (groupTeleportationConfirm.GetStateUp(handType))
+
+        if (groupTeleportationConfirm.GetStateUp(handType))
         {
             if (carpetObj != null)
             {
                 GroupTeleDeactivate();
                 carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
             }
-            //groupTeleButton = false;
-            //carpetMoveLock = false;
         }
 
         if (navigatorToggle.GetStateDown(SteamVR_Input_Sources.RightHand))
@@ -551,12 +490,10 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     {
         if (Time.fixedTime % .5 < .2)
         {
-            //backToCarObj.GetComponent<MeshRenderer>().enabled = false;
             backToCarObj.GetComponent<MeshRenderer>().material = invisible;
         }
         else
         {
-            //backToCarObj.GetComponent<MeshRenderer>().enabled = true;
             backToCarObj.GetComponent<MeshRenderer>().material = glow;
         }
 
@@ -594,7 +531,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         carpetObj.transform.GetChild(0).position = bezier.EndPoint - translateVector;
         carpetObj.transform.GetChild(0).transform.rotation = Quaternion.Euler(IndicatorRotation);
         carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-        //teleportIndicator.transform.rotation = Quaternion.Euler(IndicatorRotation);
         ControllerRotation = (this.transform.parent.transform.localEulerAngles.z);
         if (ControllerRotation > 180)
         {
@@ -624,15 +560,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         Vector3 groundPosition = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, hmdObj.transform.position.z);
         if (joystickButtonActive && carpetObj != null)
         {
-            /*Vector3 translateVec = teleportIndicator.transform.position - groundPosition;
-            hmdObj.transform.SetParent(null);
-            platformObj.transform.position = new Vector3(hmdObj.transform.position.x, platformObj.transform.position.y, platformObj.transform.position.z);
-            hmdObj.transform.SetParent(platformObj.transform);
-            platformObj.transform.localRotation = teleportIndicator.transform.localRotation;
-            Quaternion newRotation = hmdObj.transform.localRotation;
-            newRotation.z = 0;
-            newRotation.x = 0;
-            platformObj.transform.localRotation = platformObj.transform.localRotation * Quaternion.Inverse(newRotation);*/
             for (int i = 0; i < passengerIDs.Length; i++)
             {
                 photonView.RPC("RemoteTeleportation", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]),
@@ -728,21 +655,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 carpetObj.transform.GetChild(0).transform.forward
                 );
         }
-        /*
-        float angleSection = Mathf.PI * 4f / passengerIDs.Length;
-        for (int i = 0; i < passengerIDs.Length; i++)
-        {
-            float angle = (i * (angleSection + myRotAngles));// + ControllerRotation;
-            Vector3 newPos = carpetObj.transform.GetChild(0).position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * carpetObj.transform.localScale.x;
-            carpetObj.transform.GetChild(0).position = bezier.EndPoint;
-            carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-            photonView.RPC("RemoteSemiCircleForm", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), 
-                newPos, 
-                carpetObj.transform.GetChild(0).position,
-                ControllerRotation,
-                myRotAngles - 90,
-                hmdObj.transform.forward);
-        }*/
     }
     public void PresenterFormation()
     {
@@ -773,21 +685,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                     lookAtPos
                     );
         }
-        /*
-        float angleSection = Mathf.PI * 4f / passengerIDs.Length;
-        for (int i = 0; i < passengerIDs.Length; i++)
-        {
-            float angle = (i * (angleSection + myRotAngles));// + ControllerRotation;
-            Vector3 newPos = carpetObj.transform.GetChild(0).position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * carpetObj.transform.localScale.x;
-            carpetObj.transform.GetChild(0).position = bezier.EndPoint;
-            carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-            photonView.RPC("RemoteSemiCircleForm", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), 
-                newPos, 
-                carpetObj.transform.GetChild(0).position,
-                ControllerRotation,
-                myRotAngles - 90,
-                hmdObj.transform.forward);
-        }*/
     }
 
 
@@ -810,8 +707,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         teleportIndicator.transform.localRotation = Quaternion.Euler(camRot);
 
         teleportIndicator.transform.RotateAround(carpetChild, Vector3.up, -IndicatorRotation);
-        //teleportIndicator.transform.RotateAround(carpetChild, Vector3.up, -controllerRot);
-        //teleportIndicator.transform.Rotate(IndicatorRotation);
         teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
         teleportIndicator.GetComponent<CurvedRay>().GetDrawRightLine(true);
     }
@@ -845,8 +740,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         float difference = AngleDifference(platformObj.transform.eulerAngles.y, teleportIndicator.transform.eulerAngles.y);
 
         platformObj.transform.RotateAround(hmdObj.transform.position, Vector3.up, (difference - hmdObj.transform.localEulerAngles.y));
-
-        //platformObj.transform.localRotation = platformObj.transform.localRotation * Quaternion.Inverse(newRotation); 
     }
 
     [PunRPC]
@@ -877,7 +770,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     {
         teleportIndicator = GameObject.Find("/ViewingSetup/TELE");
         teleportIndicator.transform.position = newPos;
-        //teleportIndicator.transform.RotateAround(carpetPos, Vector3.up, rot);
         teleportIndicator.transform.LookAt(lookPos);
 
         teleportIndicator.transform.GetComponent<MeshRenderer>().enabled = true;
@@ -912,6 +804,39 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             platformObj.transform.SetParent(ViewPort.transform, true);
             ViewPort.transform.localScale = normalScale;
         }
+    }
+
+     public void ScalingChange(bool scaleCheck) //todelete
+    {
+        Debug.Log("Scaled");
+        if (scaleCheck)
+        {
+            platformObj.transform.SetParent(null);
+            carpetObj.transform.SetParent(null);
+            carpetObj.transform.localScale = new Vector3(carpetObj.transform.localScale.x / 1.8f, carpetObj.transform.localScale.y, carpetObj.transform.localScale.z / 1.8f);
+            ViewPort.transform.position = new Vector3(carpetObj.transform.position.x, ViewPort.transform.position.y, carpetObj.transform.position.z);
+            platformObj.transform.SetParent(ViewPort.transform, true);
+            ViewPort.transform.localScale = smallScale;
+            carpetObj.transform.SetParent(ViewPort.transform, true);
+        }
+        else
+        {
+            platformObj.transform.SetParent(null);
+            carpetObj.transform.SetParent(null);
+            ViewPort.transform.position = new Vector3(carpetObj.transform.position.x, ViewPort.transform.position.y, carpetObj.transform.position.z);
+            carpetObj.transform.localScale = new Vector3(carpetObj.transform.localScale.x * 1.8f, carpetObj.transform.localScale.y, carpetObj.transform.localScale.z * 1.8f);
+            platformObj.transform.SetParent(ViewPort.transform, true);
+            ViewPort.transform.localScale = normalScale;
+            carpetObj.transform.SetParent(ViewPort.transform, true);
+        }
+        for (int i = 0; i < passengerIDs.Length; i++)
+        {
+            if (passengerIDs[i] != myID)
+            {
+                photonView.RPC("RemoteScaling", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), scaleCheck, carpetObj.transform.position);
+            }
+        }
+
     }*/
 
 }
