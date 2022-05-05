@@ -592,9 +592,20 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         float ActorNr = transform.GetComponent<PhotonView>().OwnerActorNr;
         for (int i = 0; i < passengerIDs.Length; i++)
         {
+            if (passengerIDs.Length == 1)
+            {
+                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject;
+            }
             if (passengerIDs.Length == 2)
             {
-                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(i + 1).gameObject;
+               if (ActorNr == passengerIDs[i])
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(1).gameObject;
+                }
+                else
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(2).gameObject;
+                }
             }
             else
             {
@@ -628,10 +639,20 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         float ActorNr = transform.GetComponent<PhotonView>().OwnerActorNr;
         for (int i = 0; i < passengerIDs.Length; i++)
         {
-
+            if (passengerIDs.Length == 1)
+            {
+                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject;
+            }
             if (passengerIDs.Length == 2)
             {
-                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(i + 1).gameObject;
+                if (ActorNr == passengerIDs[i])
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(1).gameObject;
+                }
+                else
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(2).gameObject;
+                }
             }
             else
             {
@@ -662,17 +683,39 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         float ActorNr = transform.GetComponent<PhotonView>().OwnerActorNr;
         for (int i = 0; i < passengerIDs.Length; i++)
         {
-            if (ActorNr == passengerIDs[i])
+            if (passengerIDs.Length == 1)
             {
                 PosObj = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject;
                 lookAtPos = carpetObj.transform.GetChild(0).transform.GetChild(3).gameObject.transform.position;
             }
+            if (passengerIDs.Length == 2)
+            {
+                if (ActorNr == passengerIDs[i])
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject;
+                    lookAtPos = carpetObj.transform.GetChild(0).transform.GetChild(3).gameObject.transform.position;
+                }
+                else
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(3).gameObject;
+                    lookAtPos = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject.transform.position;
+                }
+            }
             else
             {
-                PosObj = carpetObj.transform.GetChild(0).transform.GetChild(4 + f).gameObject;
-                lookAtPos = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject.transform.position;
-                f++;
+                if (ActorNr == passengerIDs[i])
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject;
+                    lookAtPos = carpetObj.transform.GetChild(0).transform.GetChild(3).gameObject.transform.position;
+                }
+                else
+                {
+                    PosObj = carpetObj.transform.GetChild(0).transform.GetChild(4 + f).gameObject;
+                    lookAtPos = carpetObj.transform.GetChild(0).transform.GetChild(0).gameObject.transform.position;
+                    f++;
+                }
             }
+
             Vector3 carRotation = new Vector3(0, transform.parent.transform.rotation.eulerAngles.y - transform.parent.transform.rotation.eulerAngles.z, 0); //Adding controller Z rotation to teleport indicator  
 
             if (!carpetMoveLock)
