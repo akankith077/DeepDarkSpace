@@ -11,7 +11,7 @@ public enum HandSide { Right, Left };
 public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
 {
     // Implementation of a pointing ray for a desktop user
-
+    public CarpetNav carNavScript;
     public float maxRayLength = 100.0f;
     public float rayRadius = 0.05f;
     public float myID = 0;
@@ -44,6 +44,7 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
     private RaycastHit currentHit;
     public Material Red;
     public Material Green;
+    Rigidbody m_Rigidbody;
 
     private DraggableObject requestedOwnershipObject;
     private DraggableObject draggedObject;
@@ -146,7 +147,10 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                         hitObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                         hitObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                     }
-                    hitObj.transform.localScale = new Vector3(0.0f, 1.0f, 0.0f);
+                    m_Rigidbody = hitObj.GetComponent<Rigidbody>();
+                    m_Rigidbody.MovePosition(Vector3.one);
+                    //hitObj.transform.transform.Translate(Vector3.forward * Time.deltaTime);
+                    //hitObj.transform.localScale = new Vector3(0.0f, 1.0f, 0.0f);
                     hitObj.transform.GetComponent<MeshRenderer>().enabled = false;
 
                     if (hitObj.GetComponent<PhotonView>().CreatorActorNr != myID)
@@ -194,7 +198,9 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
                         hitObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                         hitObj.transform.GetChild(0).GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
                     }
-                    hitObj.transform.localScale = new Vector3(0.0f, 1.0f, 0.0f);
+                    m_Rigidbody = hitObj.GetComponent<Rigidbody>();
+                    m_Rigidbody.position = ( new Vector3(100.0f, 0.0f, 100.0f));
+                    hitObj.transform.position = ( new Vector3(100.0f, 0.0f, 100.0f));
                     hitObj.transform.GetComponent<MeshRenderer>().enabled = false;
 
                     if (hitObj.GetComponent<PhotonView>().CreatorActorNr != myID)

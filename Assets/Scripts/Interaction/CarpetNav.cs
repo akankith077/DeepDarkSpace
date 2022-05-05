@@ -115,10 +115,8 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             myRotAngles = hmdObj.transform.localEulerAngles.y;
             if (carpetObj != null) //To check the owner of the carpet
             {
-                carpetOwnershipCheck();
                 float scaleVal = carpetObj.transform.localScale.x;
                 edgeCorrection = new Vector3(carpetObj.transform.localScale.x - (scaleVal / 2), 0.0f, carpetObj.transform.localScale.x - (scaleVal / 2));
-                Debug.Log("EC = " + edgeCorrection.x);
             }
 
             if (navigatorMode) //Navigator Mode Indication
@@ -383,9 +381,9 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             carpIsMine = true;
             if (navigatorMode)
             {
-                helmetObj.GetComponent<MeshRenderer>().enabled = true;
-                rightWristBand.GetComponent<Renderer>().material = gold;
-                leftWristBand.GetComponent<Renderer>().material = gold;
+                helmetObj.GetComponent<MeshRenderer>().enabled = false;
+                rightWristBand.GetComponent<Renderer>().material = old;
+                leftWristBand.GetComponent<Renderer>().material = old;
             }
             else
             {
