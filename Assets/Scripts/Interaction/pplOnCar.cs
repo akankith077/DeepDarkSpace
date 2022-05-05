@@ -49,24 +49,45 @@ public class pplOnCar : MonoBehaviourPunCallbacks
 
     public Vector3 CarpetPos { get; set; }
 
+    private void OnCollisionStay(Collision other)
+    {
+        if (other.transform.name == "ComicHandRight(Clone)")
+        {
+            int checkID = other.gameObject.GetComponent<PhotonView>().OwnerActorNr;
+            //string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
+            if (!passenger.Contains(checkID))
+            {
+                passengers.Add(checkID);
+                passengerIDs = passengers.ToArray();
+            }
+        }
+
+    }
+    /*
     private void OnCollisionEnter(Collision collision) //*************** When user enters the carpet
-    { 
+    {
         if (collision.transform.name == "ComicHandRight(Clone)")
         {
             int checkID = collision.gameObject.GetComponent<PhotonView>().OwnerActorNr;
             //string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
-            passengers.Add(checkID);
-            passengerIDs = passengers.ToArray();
+            if (!passenger.Contains(checkID))
+            {
+                passengers.Add(checkID);
+                passengerIDs = passengers.ToArray();
+            }
         }
-    }
+    }*/
     private void OnCollisionExit(Collision collision) //*************** When user enters the carpet
     {
         if (collision.transform.name == "ComicHandRight(Clone)")
         {
             int checkID = collision.gameObject.GetComponent<PhotonView>().OwnerActorNr;
             //string name = collision.gameObject.GetComponent<PhotonView>().Owner.NickName;//*************** Checks Actor number
-            passengers.Remove(checkID);
-            passengerIDs = passengers.ToArray();
+            if (!passenger.Contains(checkID))
+            {
+                passengers.Remove(checkID);
+                passengerIDs = passengers.ToArray();
+            }
         }
     }
 
