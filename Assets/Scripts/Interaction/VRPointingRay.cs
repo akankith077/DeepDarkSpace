@@ -11,7 +11,6 @@ public enum HandSide { Right, Left };
 public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
 {
     // Implementation of a pointing ray for a desktop user
-    public CarpetNav carNavScript;
     public float maxRayLength = 100.0f;
     public float rayRadius = 0.05f;
     public float myID = 0;
