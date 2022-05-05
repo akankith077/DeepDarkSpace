@@ -48,7 +48,7 @@ public class pplOnCar : MonoBehaviourPunCallbacks
     public int Index { get; set; }
 
     public Vector3 CarpetPos { get; set; }
-
+/*
     private void OnCollisionStay(Collision other)
     {
         if (other.transform.name == "ComicHandRight(Clone)")
@@ -62,8 +62,8 @@ public class pplOnCar : MonoBehaviourPunCallbacks
             }
         }
 
-    }
-    /*
+    }*/
+    
     private void OnCollisionEnter(Collision collision) //*************** When user enters the carpet
     {
         if (collision.transform.name == "ComicHandRight(Clone)")
@@ -76,7 +76,7 @@ public class pplOnCar : MonoBehaviourPunCallbacks
                 passengerIDs = passengers.ToArray();
             }
         }
-    }*/
+    }
     private void OnCollisionExit(Collision collision) //*************** When user enters the carpet
     {
         if (collision.transform.name == "ComicHandRight(Clone)")
