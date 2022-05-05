@@ -20,10 +20,8 @@ public class FireCreator : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision) //*************** When user enters the carpet
     {
-        Debug.Log("Collider HIT : " + collision.transform.name);
         if (collision.gameObject.name == "DraggableStick")
         {
-            Debug.Log("FLAME SIZE INCRESE");
             fire.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         }
     }
