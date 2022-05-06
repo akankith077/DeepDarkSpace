@@ -11,7 +11,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     public SteamVR_Input_Sources handType;
     public BezierCurve bezier;
-    public ColliderCheck colliderScript;
+    public LoggingScript logScript;
 
     public SteamVR_Action_Boolean groupTeleportationActive;
     public SteamVR_Action_Boolean groupTeleportationConfirm;
@@ -21,7 +21,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public SteamVR_Action_Boolean circleFormAction;
     public SteamVR_Action_Boolean presenterFormAction;
     public SteamVR_Action_Boolean semiCircFormAction;
-    public SteamVR_Action_Boolean scaling;
+    public SteamVR_Action_Boolean loggingButton;
 
     public GameObject platformObj;
     public GameObject hmdObj;
@@ -36,6 +36,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     private GameObject arrowObj;
     private GameObject PosObj;
     private GameObject backToCarObj;
+    private GameObject LoggingObj;
     private Vector3 locationObj;
     public Vector3 fireLocation;
     public Vector3 foodlocation;
@@ -68,6 +69,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
     public bool grouped = false;
     public bool navigatorMode = false;
     public bool carpIsMine = false;
+    private bool logCheck = false;
 
     private bool backToCarCheck = false;
     private bool teleButtonCheck = false;
@@ -102,6 +104,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             leftWristBand = this.transform.GetChild(2).gameObject;
             rightWristBand = leftHand.transform.GetChild(2).gameObject;
             backToCarObj = leftHand.transform.GetChild(7).gameObject;
+            LoggingObj = leftHand.transform.GetChild(8).gameObject;
             navTag = this.transform.GetChild(4).gameObject;
         }
     }
@@ -269,7 +272,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 Vector3 translateVector = teleportIndicator.transform.position - groundPosition;
 
                 platformObj.transform.position += translateVector;
-
+                logScript.backToCarpetData(platformObj.transform.position);
                 if (index < carpetPosList.Count)
                 {
                     index++;
@@ -408,6 +411,10 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (circleFormAction.GetStateDown(handType))
         {
             cicrleForm = true;
+            if (logCheck && onCarpet)
+            {
+                logScript.addData(1, carpetObj.transform.position);
+            }
         }
         else if (circleFormAction.GetStateUp(handType))
         {
@@ -424,6 +431,11 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (semiCircFormAction.GetStateDown(handType))
         {
             semiCircForm = true;
+
+            if (logCheck && onCarpet)
+            {
+                logScript.addData(2, carpetObj.transform.position);
+            }
         }
         else if (semiCircFormAction.GetStateUp(handType))
         {
@@ -440,6 +452,10 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (presenterFormAction.GetStateDown(handType))
         {
             presenterForm = true;
+            if (logCheck && onCarpet)
+            {
+                logScript.addData(3, carpetObj.transform.position);
+            }
         }
         else if (presenterFormAction.GetStateUp(handType))
         {
@@ -455,11 +471,12 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
         if (groupTeleportationConfirm.GetStateUp(handType))
         {
-            if (carpetObj != null)
+            if (logCheck && onCarpet)
             {
-                GroupTeleDeactivate();
-                carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+                logScript.addData(4, carpetObj.transform.position);
             }
+            GroupTeleDeactivate();
+            carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
         }
 
         if (navigatorToggle.GetStateDown(SteamVR_Input_Sources.RightHand))
@@ -471,6 +488,24 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             else
             {
                 navigatorMode = true;
+            }
+        }
+
+        if (loggingButton.GetStateDown(SteamVR_Input_Sources.LeftHand))
+        {
+            Debug.Log("Button Pressed");
+            if (logCheck)
+            {
+                logCheck = false;
+                Debug.Log(" ******************** Logging deactive");
+                backToCarObj.GetComponent<MeshRenderer>().material = invisible;
+                logScript.printData();
+            }
+            else
+            {
+                Debug.Log(" ******************** Logging active");
+                logCheck = true;
+                backToCarObj.GetComponent<MeshRenderer>().material = glow;
             }
         }
     }
