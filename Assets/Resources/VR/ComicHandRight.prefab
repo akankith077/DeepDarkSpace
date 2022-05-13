@@ -2060,10 +2060,10 @@ MonoBehaviour:
     actionPath: /actions/default/in/backToCar
     needsReinit: 0
   groupCancel:
-    actionPath: /actions/default/in/SnapRight
+    actionPath: /actions/default/in/indiTeleActive
     needsReinit: 0
   navigatorToggle:
-    actionPath: /actions/default/in/TimerAction
+    actionPath: /actions/default/in/SnapRight
     needsReinit: 0
   circleFormAction:
     actionPath: /actions/default/in/circleForm
@@ -2075,7 +2075,7 @@ MonoBehaviour:
     actionPath: /actions/default/in/semiCircForm
     needsReinit: 0
   loggingButton:
-    actionPath: 
+    actionPath: /actions/default/in/TimerAction
     needsReinit: 0
   platformObj: {fileID: 0}
   hmdObj: {fileID: 0}
@@ -2099,6 +2099,7 @@ MonoBehaviour:
   old: {fileID: 2100000, guid: 7d21b26c2f8427c4f8ec8a8439be9e03, type: 2}
   invisible: {fileID: 2100000, guid: 738f3d447e6897e46b1d2a71cc963f0e, type: 2}
   glow: {fileID: 2100000, guid: 190e9c017163b7d409a7ae79bb37a3c8, type: 2}
+  lightGlow: {fileID: 2100000, guid: 323382c7784a21e46a4ff5934cd9ea3f, type: 2}
 --- !u!114 &1931082550454580097
 MonoBehaviour:
   m_ObjectHideFlags: 0

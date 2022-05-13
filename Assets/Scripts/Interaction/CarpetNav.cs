@@ -87,6 +87,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     public Material invisible;
     public Material glow;
+    public Material lightGlow;
 
     void Start()
     {
@@ -238,13 +239,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                 Array.Sort(passengerIDs);
             }
 
-            if (!grouped)
-            {
-                rightWristBand.GetComponent<MeshRenderer>().enabled = false;
-                leftWristBand.GetComponent<MeshRenderer>().enabled = false;
-                carpetObj = null;
-                oldCarpet = null;
-            }
             if (onCarpet == false && grouped == true) //BACK TO CARPET 
             {
                 BackToCarGlow();
@@ -297,6 +291,11 @@ public class CarpetNav : MonoBehaviourPunCallbacks
                     oldCarpet = carpetObj;
                     grouped = true;
                     onCarpet = true;
+
+                    leftWristBand.GetComponent<MeshRenderer>().material = glow;
+                    rightWristBand.GetComponent<MeshRenderer>().material = glow;
+                    rightWristBand.GetComponent<MeshRenderer>().enabled = true;
+                    leftWristBand.GetComponent<MeshRenderer>().enabled = true;
                 }
                 if (backToCarObj != null)
                 {
@@ -403,18 +402,18 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             backToCarCheck = false;
         }
 
-        if (groupCancel.GetStateUp(handType))
+        if (groupCancel.GetStateUp(SteamVR_Input_Sources.LeftHand))
         {
             grouped = false;
+            rightWristBand.GetComponent<MeshRenderer>().enabled = false;
+            leftWristBand.GetComponent<MeshRenderer>().enabled = false;
+            carpetObj = null;
+            oldCarpet = null;
         }
 
         if (circleFormAction.GetStateDown(handType))
         {
             cicrleForm = true;
-            if (logCheck && onCarpet)
-            {
-                logScript.addData(1, carpetObj.transform.position);
-            }
         }
         else if (circleFormAction.GetStateUp(handType))
         {
@@ -431,11 +430,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (semiCircFormAction.GetStateDown(handType))
         {
             semiCircForm = true;
-
-            if (logCheck && onCarpet)
-            {
-                logScript.addData(2, carpetObj.transform.position);
-            }
         }
         else if (semiCircFormAction.GetStateUp(handType))
         {
@@ -452,10 +446,6 @@ public class CarpetNav : MonoBehaviourPunCallbacks
         if (presenterFormAction.GetStateDown(handType))
         {
             presenterForm = true;
-            if (logCheck && onCarpet)
-            {
-                logScript.addData(3, carpetObj.transform.position);
-            }
         }
         else if (presenterFormAction.GetStateUp(handType))
         {
@@ -471,12 +461,23 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
         if (groupTeleportationConfirm.GetStateUp(handType))
         {
-            if (logCheck && onCarpet)
+            if (carpetObj != null)
             {
-                logScript.addData(4, carpetObj.transform.position);
+                if (logCheck && onCarpet)
+                {
+                    if (teleButtonCheck)
+                        logScript.addData(4, carpetObj.transform.position);
+                    if (presenterForm)
+                        logScript.addData(3, carpetObj.transform.position);
+                    if (cicrleForm)
+                        logScript.addData(1, carpetObj.transform.position);
+                    if (semiCircForm)
+                        logScript.addData(2, carpetObj.transform.position);
+
+                }
+                GroupTeleDeactivate();
+                carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
             }
-            GroupTeleDeactivate();
-            carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
         }
 
         if (navigatorToggle.GetStateDown(SteamVR_Input_Sources.RightHand))
@@ -498,14 +499,14 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             {
                 logCheck = false;
                 Debug.Log(" ******************** Logging deactive");
-                backToCarObj.GetComponent<MeshRenderer>().material = invisible;
+                LoggingObj.GetComponent<MeshRenderer>().material = invisible;
                 logScript.printData();
             }
             else
             {
                 Debug.Log(" ******************** Logging active");
                 logCheck = true;
-                backToCarObj.GetComponent<MeshRenderer>().material = glow;
+                LoggingObj.GetComponent<MeshRenderer>().material = glow;
             }
         }
     }
@@ -524,13 +525,17 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     public void BackToCarGlow()
     {
-        if (Time.fixedTime % .5 < .2)
+        if (Time.fixedTime % .7 < .2)
         {
             backToCarObj.GetComponent<MeshRenderer>().material = invisible;
+            leftWristBand.GetComponent<MeshRenderer>().material = invisible;
+            rightWristBand.GetComponent<MeshRenderer>().material = invisible;
         }
         else
         {
             backToCarObj.GetComponent<MeshRenderer>().material = glow;
+            leftWristBand.GetComponent<MeshRenderer>().material = lightGlow;
+            rightWristBand.GetComponent<MeshRenderer>().material = lightGlow;
         }
 
     }
@@ -584,10 +589,13 @@ public class CarpetNav : MonoBehaviourPunCallbacks
 
     public void GroupTeleDeactivate()
     {
-        carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-        for (int i = 0; i < passengerIDs.Length; i++)
+        if (carpetObj != null)
         {
-            photonView.RPC("RemoteTeleIndicatorDeAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), false);
+            carpetObj.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+            for (int i = 0; i < passengerIDs.Length; i++)
+            {
+                photonView.RPC("RemoteTeleIndicatorDeAcitve", PhotonNetwork.CurrentRoom.GetPlayer(passengerIDs[i]), false);
+            }
         }
     }
 

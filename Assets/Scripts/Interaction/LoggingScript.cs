@@ -65,7 +65,7 @@ public class LoggingScript : MonoBehaviour
     public void printData()
     { 
         StringBuilder sbOutput = new StringBuilder();
-        string strFilePath = @"C:\Users\akank\ThesisData\MTC.csv";
+        string strFilePath = @"C:\Users\unity-developer\Documents\GitHub\UserData\MTC.csv";
         List<string> loggingBody = new List<string>();
         loggingBody.Add("Index,Time(s),Type of jump,Jump Location(s)");
         string JumpIime, TypeOfJump, JumpLocations;
@@ -85,7 +85,7 @@ public class LoggingScript : MonoBehaviour
         for(int i = 0; i < backToCarpetPostions.Count; i++)
         {
             JumpLocations = backToCarpetPostions[i].ToString("F3");
-            loggingBody.Add((index + 1) +  strSeperator + JumpLocations);
+            loggingBody.Add((i + 1) +  strSeperator + JumpLocations);
         }
 
         loggingBody.Add("Cicle formation, SemiCircle Formation, Presenter Formations, As-is Formation, Total Jumps");
@@ -95,7 +95,7 @@ public class LoggingScript : MonoBehaviour
         {
             sbOutput.AppendLine(loggingBody[i]);
         }
-
+        Debug.Log("File saved ");
         File.WriteAllText(strFilePath, sbOutput.ToString());
     }
 }
