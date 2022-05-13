@@ -4,8 +4,9 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Text;
+using Photon.Pun;
 
-public class LoggingScript : MonoBehaviour
+public class LoggingScript : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
     public CarpetNav carNavScript;
@@ -65,7 +66,7 @@ public class LoggingScript : MonoBehaviour
     public void printData()
     { 
         StringBuilder sbOutput = new StringBuilder();
-        string strFilePath = @"C:\Users\unity-developer\Documents\GitHub\UserData\MTC.csv";
+        string strFilePath = @"C:\Users\unity-developer\Documents\GitHub\DeepDarkSpace\UserData\" + photonView.Owner.NickName + ".csv";
         List<string> loggingBody = new List<string>();
         loggingBody.Add("Index,Time(s),Type of jump,Jump Location(s)");
         string JumpIime, TypeOfJump, JumpLocations;

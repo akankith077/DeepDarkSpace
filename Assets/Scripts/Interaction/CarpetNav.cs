@@ -409,6 +409,7 @@ public class CarpetNav : MonoBehaviourPunCallbacks
             leftWristBand.GetComponent<MeshRenderer>().enabled = false;
             carpetObj = null;
             oldCarpet = null;
+            backToCarObj.GetComponent<MeshRenderer>().material = invisible;
         }
 
         if (circleFormAction.GetStateDown(handType))

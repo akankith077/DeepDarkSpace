@@ -191,7 +191,7 @@ public class VRPointingRay : MonoBehaviourPun, IPunOwnershipCallbacks
             {
                 if (currentHit.collider.name == "Collider")
                 {
-                    //hitObj = currentHit.transform.parent.transform.gameObject;
+                    hitObj = currentHit.transform.gameObject;
                     if (!hitObj.GetComponent<PhotonView>().IsMine)
                     {
                         hitObj.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
